@@ -1,0 +1,27 @@
+<?php
+
+function checkStr($str)
+{
+	$output='';
+	$a=preg_match('/['.chr(0xa1).'-'.chr(0xff).']/', $str);
+	$b=preg_match('/[0-9]/', $str);
+	$c=preg_match('/[a-zA-Z]/', $str);
+	if($a && $b && $c)
+		$output='汉字数字英文的混合字符串';
+	elseif($a && $b && !$c)
+		$output='汉字数字的混合字符串';
+	elseif($a && !$b && $c)
+		$output='汉字英文的混合字符串';
+	elseif(!$a && $b && $c)
+		$output='数字英文的混合字符串';
+	elseif($a && !$b && !$c)
+		$output='纯汉字';
+	elseif(!$a && $b && !$c)
+		$output='纯数字';
+	elseif(!$a && !$b && $c)
+		$output='纯英文';
+	return $output;
+}
+
+
+?>
