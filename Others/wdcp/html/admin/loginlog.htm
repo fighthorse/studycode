@@ -1,0 +1,48 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>登录日志</legend>
+				<div class="tools">
+					<button class="layui-btn layui-btn-primary layui-btn-small" onclick="act_confirm('确定要清空吗','','act=clean','reload')"><i class="layui-icon iconfont icon-delete"></i>清空登录日志</button>
+					<a class="layui-btn layui-btn-danger layui-btn-small" href="http://www.wdlinux.cn/bbs/viewthread.php?tid=3065&page=1&extra=#pid11233" data-target="notab" target=_blank ><i class="layui-icon iconfont icon-times-circle"></i>防止他人访问后台</a>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">ID</th>
+								<th class="text-center">用户名</th>
+								<th class="text-center">密码</th>
+								<th class="text-center">IP</th>
+								<th class="text-center">时间</th>
+								<th class="text-center">状态</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{range .logs}}
+							<tr class="text-center">
+								<td>{{.Id}}</td>
+								<td>{{.Username}}</td>
+								<td>{{.Password}}</td>
+								<td>{{.Ipaddr}}</td>
+								<td>{{dateformat .Ltime "2006-01-02 15:04:05"}}</td>
+								<td>
+									{{if eq .Status 0}}成功
+									{{else if eq .Status 1}}用户名错误
+									{{else if eq .Status 3}}用户名不存在
+									{{else}}密码错误
+									{{end}}
+								</td>
+							</tr>
+							{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						只显示最近30条记录
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

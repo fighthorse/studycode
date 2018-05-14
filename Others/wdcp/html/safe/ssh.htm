@@ -1,0 +1,250 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md6">
+			<fieldset class="layui-elem-field">
+				<legend>SSH设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">修改端口</label>
+							<div class="layui-input-inline" style="width:100px">
+								<input type="text" name="port" value="{{.port}}" required lay-verify="number" placeholder="22" autocomplete="off" class="layui-input layui-input-small">
+							</div>
+							<div class="layui-input-inline">
+								<button type="submit" class="layui-btn layui-btn-primary layui-btn-small">修改</button>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">允许root登录</label>
+							<div class="layui-input-block">
+								<input type="checkbox" lay-skin='switch' lay-text="开启|关闭" data-n="permitr" data-v="{{.permitrs}}" {{if eq .permitr "是"}}checked{{end}}>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">使用DNS解析</label>
+							<div class="layui-input-block">
+								<input type="checkbox" lay-skin='switch' lay-text="开启|关闭" data-n="usedns" data-v="{{.usednss}}" {{if eq .usedns "是"}}checked{{end}}>
+							</div>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+		<div class="layui-col-md6">
+			<fieldset class="layui-elem-field">
+				<legend>安全设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">公钥验证登录</label>
+							<div class="layui-input-block">
+								<div class="layui-form-mid">
+									{{.rsaauth}}
+									<button class="layui-btn layui-btn-mini" onclick="act_confirm('确定要生成密钥吗？','','act=mk');return false">首次生成密钥</button>
+									<button class="layui-btn layui-btn-primary layui-btn-mini" id="btnDownloadKey">下载密钥</button>
+								</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">修改私钥密码</label>
+							<div class="layui-input-block">
+								<div class="layui-form-mid"><button class="layui-btn layui-btn-warm layui-btn-mini" id="btnSshckChp" onclick="return false;">修改私钥密码</button></div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">密码验证登录</label>
+							<div class="layui-input-block">
+								<input type="checkbox" lay-skin='switch' lay-text="开启|关闭" data-n="passauth" data-v="{{.passauths}}" {{if eq .passauth "是"}}checked{{end}}>
+							</div>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	<blockquote class="layui-elem-quote">
+		1:修改后需要重启SSH才会生效，现在就 <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="act_confirm('确定要重启SSH服务吗？','/sys/service','act=restart&srv=sshd');return false">重启</button> <br /> 
+		2:禁止使用DNS解释，能加快ssh的连接速度<br>
+		3:修改端口前，需要在防火墙里开通相应端口，否则会无法连接<br>
+		4:默认私钥密码为空，可生成后修改<br>
+		5:关闭密码验证登录，也就是只能使用密钥文件登录方式<br>
+		6:如果是使用PuTTy登录，需要使用puttygen生成.ppk格式的文件方可正常使用
+	</blockquote>
+	<script type="text/template" id="chgFormSet">
+	<div class="layui-field-box">
+		<form class="layui-form" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label">原密码</label>
+				<div class="layui-input-inline" style="width:280px">
+					<input type="password" name="opasswd" autocomplete="off" class="layui-input" placeholder="请输入原密码">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">新密码</label>
+				<div class="layui-input-inline" style="width:280px">
+					<input type="password" name="npasswd" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="6-15个字符，由字母、数字、下划线组成">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">确认密码</label>
+				<div class="layui-input-inline" style="width:280px">
+					<input type="password" name="cnpasswd" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="请确认新密码">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="formSshChgpw">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</form>
+		<blockquote class="layui-elem-quote">
+			1:修改SSH公钥登录的私钥密码,默认私钥密码为空<br>
+			2:务必保存好新密码 
+		</blockquote>
+	</div>
+	</script>
+</div>
+<script type="text/javascript">
+	layui.use('form', function() {
+		var addBoxIndex = -1;
+		var $ = layui.jquery;
+		var form=layui.form;
+		$("form").submit(function(){
+			var url=$(this).attr('action');
+			var formData=new FormData($(this)[0]);
+			$.ajax({
+				url:url,
+				type:'post',
+				data:formData,
+				async: false,  
+		        cache: false,  
+		        contentType: false,  
+		        processData: false, 
+				success:function(data){
+					if(data.errCode==0){
+						layer.msg(data.msg, {icon: 1 , time : 1000});
+					}else if(data.errCode==1){
+						layer.msg(data.msg, {icon: 2 , time : 1000});
+					}else{
+						layer.msg("数据错误", {icon: 2 , time : 1000});
+					}
+				},
+				error:function(data){
+					layer.msg("网络错误", {icon: 2 , time : 1000});
+				}
+			});
+			return false;
+		});
+		form.on('switch',function(check){
+			var msg = check.elem.checked ? "确定要开启吗" : "确定要关闭吗";
+			var n = $(check.elem).attr("data-n");
+			var v = $(check.elem).attr("data-v");
+			var para = 'act=set&n=' + n + '&v=' + v;
+			var url = window.location.href;
+			layer.open({
+				content : msg,
+				icon : 3,
+				title : '系统提示',
+				btn:['确定','取消'],
+				yes : function () {
+					$.ajax({
+						url : url,
+						data : para,
+						type : 'get',  
+						success : function(data){
+							if(data.errCode == 0){
+								layer.msg(data.msg, {icon: 1 , time : 1000});
+							}else if(data.errCode == 1){
+								layer.msg(data.msg, {icon: 2 , time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2 , time : 1000});
+							}
+						},
+						error : function(data){
+							layer.alert("网络错误",{icon:2,title:"系统提示"});
+							$(check.elem).prop("checked",!check.elem.checked);
+							form.render("checkbox");
+						}
+					});
+			    }, btn2 : function(){
+			    	$(check.elem).prop("checked" , !check.elem.checked);
+					form.render("checkbox");
+			    }, cancel : function(){
+			    	$(check.elem).prop("checked" , !check.elem.checked);
+					form.render("checkbox");
+				}
+			});
+		});
+		$("#btnSshckChp").click(function(){
+			if(addBoxIndex !== -1) return;
+			content=$("#chgFormSet").html();
+			addBoxIndex = layer.open({
+				type: 1,
+				title: '增加用户',
+				content: content,
+				btn: ['保存', '取消'],
+				shade: false,
+				area: ['500px', '400px'],
+				zIndex: 200000,
+				yes: function(index) {
+					//触发表单的提交事件
+					$('form.layui-form').find('button[lay-filter=formSshChgpw]').click();
+				},
+				success: function(layero, index) {
+					//弹出窗口成功后渲染表单
+					var form = layui.form;
+					form.render();
+					form.on('submit(formSshChgpw)', function(data) {
+						var formData=new FormData(data.form);
+						$.ajax({
+							url:"/safe/sshck?act=chp&t=k",
+							type: 'POST',  
+					        data: formData,  
+					        async: false,  
+					        cache: false,  
+					        contentType: false,  
+					        processData: false, 
+							success:function(data){
+								if(data.errCode==0){
+									layer.msg(data.msg, {icon: 1 , time : 1000});
+								}else if(data.errCode==1){
+									layer.msg(data.msg, {icon: 2 , time : 1000});
+								}else{
+									layer.msg("数据错误", {icon: 2 , time : 1000});
+								}
+							},
+							error:function(data){
+								layer.msg("网络错误", {icon: 2 , time : 1000});
+							}
+						});
+						return false; //阻止表单提交								
+					});
+				},
+				end: function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+		$("#btnDownloadKey").click(function(){
+			var url=window.location.href;
+			var data="act=d&t=k";
+			$.ajax({
+				url:url,
+				data:data,
+				type: 'get',  
+				success : function(data){
+					if(data.errCode != 0){
+							window.location.href= url+"?act=d&t=k";
+					}else{
+						layer.msg(data.msg, {icon: 2 , time : 1000});
+					}
+				},
+				error : function(data){
+					layer.alert("网络错误",{icon:2 , title : "系统提示"});
+				}
+			});
+			return false;
+		});
+	});
+</script>

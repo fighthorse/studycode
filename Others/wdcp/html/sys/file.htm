@@ -1,0 +1,492 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>文件管理</legend>
+				<div class="tools" style="float:left">
+					<div class="layui-row" style="margin-bottom: 5px ">
+						<div class="layui-btn-group">
+							<a class="layui-btn layui-btn-primary layui-btn-small" data-target="notab" href="?p={{.backup_dir}}">备份管理</a>
+							<a class="layui-btn layui-btn-primary layui-btn-small" data-target="notab" href="?p={{.trash_dir}}">回收站</a>
+							<a class="layui-btn layui-btn-primary layui-btn-small" data-target="notab" href="/sys/file?p=/www/wdlinux/nginx/conf/vhost&act=list&t=d">nginx配置</a>
+							<a class="layui-btn layui-btn-primary layui-btn-small" data-target="notab" href="/sys/file?p=/www/wdlinux/apache/conf/vhost&act=list&t=d">apache配置</a> 
+							<button class="layui-btn layui-btn-primary layui-btn-small btnFileEdit" data-target="notab" data-file="/www/wdlinux/etc/my.cnf">MySQL配置</button>
+							<button class="layui-btn layui-btn-primary layui-btn-small btnFileEdit" data-target="notab"  data-file="/www/wdlinux/etc/php.ini">PHP配置</button>
+						</div>
+						<div class="layui-btn-group">
+						    <button class="layui-btn layui-btn-primary layui-btn-small btnDownload">文件下载</button>
+							<button class="layui-btn layui-btn-primary layui-btn-small btnAddDir">创建文件夹</button>
+							<button class="layui-btn layui-btn-primary layui-btn-small btnAddFile">创建文件</button>
+							<button class="layui-btn layui-btn-primary layui-btn-small btnUpload">文件上传</button>
+						</div>
+					</div>
+					<div class="layui-row">
+						<div class="layui-btn-group">
+						    <a class="layui-btn layui-btn-primary layui-btn-small" data-target="notab" href="?p={{.pre_dir}}">返回上层</a> 
+							<a class="layui-btn layui-btn-primary layui-btn-small" data-target="notab" href="?p={{.home_dir}}">主目录</a>
+							<a class="layui-btn layui-btn-primary layui-btn-small" data-target="notab" href=# onClick="location.reload()">刷新</a>
+						</div>&nbsp;&nbsp;&nbsp; 
+						当前目录: {{if eq .cu_dir ""}}/{{else}}{{.cu_dir}}{{end}}
+					</div>
+					
+				</div>
+				<div class="layui-field-box">
+				<form method="post" action="?act=form&p={{.cu_dir}}" class="layui-form" id="actForm">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">选择</th>
+								<th class="text-center">名称</th>
+								<th class="text-center">类型</th>
+								<th class="text-center">所有者</th>
+								<th class="text-center">所有组</th>
+								<th class="text-center">权限</th>
+								<th class="text-center">最后修改</th>
+								<th class="text-center">大小</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .files}} 
+							<tr class="text-center">
+								<td><input name="num" type="checkbox" lay-skin="primary" value="{{.filename}}" /></td>
+								{{if eq .type "dir"}}
+							    <td><a href="?p={{$.cu_dir}}/{{.filename}}&act=list&t=d" data-target="notab" class="text-normal">{{.filename}}</a></td>
+							    <td><span class="text-normal">{{.typen}}</span></td>
+							    {{else}}
+							    <td><a class="text-normal btnFileEdit" href="javascript:;" data-file="{{$.cu_dir}}/{{.filename}}" data-target="notab">{{.filename}}</a></td>
+							    <td>{{.typen}}</td>
+							    {{end}}
+								<td>{{.own}}</td>
+							    <td>{{.group}}</td>
+							    <td>{{.mode}}</td>
+							    <td>{{.mtime}}</td>
+							    <td>{{.size}}</td>
+							    {{if eq .type "dir"}}
+							    <td> 
+							    	<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定要删除吗？','/sys/file','p={{$.cu_dir}}/{{.filename}}&act=del&t=d','reload');return false;">删</button> 
+							    	<button class="layui-btn layui-btn-normal layui-btn-mini" onclick="act_confirm('确定要打包吗？','/sys/file','p={{$.cu_dir}}/{{.filename}}&act=tar','reload');return false;">打包</button>
+							    </td>
+								{{else}}
+								<td> 
+									<button class="layui-btn layui-btn-normal layui-btn-mini btnFileEdit" data-file="{{$.cu_dir}}/{{.filename}}" onclick="return false;">编</button> 
+									<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定要删除吗？','/sys/file','p={{$.cu_dir}}/{{.filename}}&act=del&t=f','reload');return false;">删</button> 
+									<a class="layui-btn layui-btn-primary layui-btn-mini" data-target="notab" href="/sys/file?p={{$.cu_dir}}&act=down&t=f&f={{.filename}}">下载</a> 
+									{{if eq .fgz 1}}
+									<button class="layui-btn layui-btn-warm layui-btn-mini" onclick="act_confirm('确定要解压吗？','/sys/file','p={{$.cu_dir}}/{{.filename}}&act=untar','reload');return false;">解压</button>
+									{{end}}
+								</td>
+								{{end}}
+							</tr>
+						{{else}}
+						<tr class="text-center"><td colspan="9" >当前目录下还没有文件或文件夹!</td></tr>
+						{{end}}
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="9">
+									<div class="layui-form-item">
+											<div class="layui-input-inline"style="width:80px">
+												<input type="checkbox" lay-filter="checkAll" title="全选" lay-skin="primary">
+											</div>
+											<div class="layui-form-mid">操作</div>
+											<div class="layui-input-inline" style="width:100px">
+												<select name="acts" id="acts" class="layui-input-small">
+											        <option value="0" selected="selected">选择</option>
+											        <option value="tar">打包</option>
+											        <option value="del">删除</option>
+													<option value="move">移动</option>
+													<option value="copy">复制</option>
+													<option value="rename">改名</option>
+											        <option value="perm">修改权限</option>
+													<option value="ower">所有者</option>
+													<option value="group">所有组</option>
+											    </select> 
+											</div>
+											<div class="layui-form-mid">打包名/权限值/用户名/组名/目标文件或目录名</div>
+											<div class="layui-input-inline" style="width:100px">
+												<input name="act_name" type="text" class="layui-input layui-input-small"/>
+											</div>
+											<div class="layui-input-inline"style="width:80px">
+												<input name="act_more" type="checkbox" value="1" title="继承" lay-skin="primary"/>
+											</div>
+								    	<input name="p" type="hidden" id="p" value="{{.cu_dir}}" class="layui-input"/>
+										<button type="submit" class="layui-btn layui-btn-small">确定</button>
+									</div>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:为确保数据安全及误操作,回收站的内容,不可以在此删除,可以使用ssh,winscp,sftp等删除<br />
+					    2:选择打包后,可输入打包文件名,如留空,则用当前日期时间命名,如20110115.tar.gz<br />
+						3:选择删除,数据将会删除到回收站中<br/>
+					    4:选择修改权限,请在后面输入权限数据,如777<br />
+					    5:选择所有者,请在后面输入相应的用户名或用户ID<br />
+					    6:选择所有组,请在后面输入相应的用户组名或组ID<br />
+					    7:继承,在选择权限,所有者,所有组时,代表该目录下的所有权限或用户,组均按此值修改. <br />
+						8:<span class="text-danger">修改权限和所有者,请务必谨慎,否则可能会导致网站访问故障或系统问题等</span><br>
+						9:复制或移动或改名时,请在后面输入相关的复制或移动或改名的目标文件名或目录名<br>
+						10:在线解压(支持.tar,tar.gz,tgz,bz2,zip格式)
+					</blockquote>
+					</form>
+				</div>
+			</fieldset>
+			<!--文件下载模板 start-->
+				<script type="text/template" id="downloadFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="?act=get_file&p={{.cu_dir}}">
+						<div class="layui-form-item">
+							<label class="layui-form-label">文件链接</label>
+							<div class="layui-input-block">
+								<input type="text" name="get_url" required lay-verify="required" placeholder="下载文件会保存在当前目录下" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formDownloadFile">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				</script>
+			<!--创建文件夹模板 start-->
+				<script type="text/template" id="addDirFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="?act=create_dir&p={{.cu_dir}}">
+						<div class="layui-form-item">
+							<label class="layui-form-label">文件夹名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="dirname" required lay-verify="required" placeholder="字母,数字,下划线组成" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formAddDir">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				</script>
+				<!--创建文件模板 start-->
+				<script type="text/template" id="addFileFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="?act=create_file&p={{.cu_dir}}">
+						<div class="layui-form-item">
+							<label class="layui-form-label">文件名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="filename" required lay-verify="required" placeholder="字母,数字,下划线组成" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formAddFile">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				</script>
+				<!--上传文件模板 start-->
+				<script type="text/template" id="uploadFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="?act=upload_file&p={{.cu_dir}}">
+						<div class="layui-form-item">
+							<label class="layui-form-label">选择文件</label>
+							<div class="layui-input-block">
+								<input type="file" name="upfile" required lay-verify="required">
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formUploadFile">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				</script>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var form = layui.form;
+	var addBoxIndex = -1;
+	form.on("checkbox(checkAll)",function(data){
+		if(data.elem.checked==true){
+			$("input[name=num]").prop("checked", true);
+		}else{
+			$("input[name=num]").prop("checked", false);
+		}
+		form.render('checkbox');
+	});
+	$("form").submit(function(){
+		var url=$(this).attr('action');
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:"/sys/file"+url,
+			type:'post',
+			data:formData,
+			async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1 , time : 1000} , function(){
+						window.location.reload();
+					});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false;
+	});
+	$(".btnDownload").click(function(){
+		if(addBoxIndex !== -1) return;
+		var id=$(this).attr("data-id");
+		var username=$(this).attr("data-user");
+		content=$("#downloadFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '文件下载',
+			content: content,
+			btn: ['保存', '取消'],
+			shade: false,
+			area: ['500px', '200px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formDownloadFile]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				$('form.layui-form').find('input[name=id]').val(id);
+				$('form.layui-form').find('.username').html(username);
+				form.on('submit(formDownloadFile)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"?act=get_files&p={{.cu_dir}}",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1 , time : 1000} , function(){
+									window.location.reload();
+								});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2 , time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2 , time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2 , time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+	$(".btnAddDir").click(function(){
+		if(addBoxIndex !== -1) return;
+		var id=$(this).attr("data-id");
+		var username=$(this).attr("data-user");
+		content=$("#addDirFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '创建文件夹',
+			content: content,
+			btn: ['保存', '取消'],
+			shade: false,
+			area: ['500px', '200px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formAddDir]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				$('form.layui-form').find('input[name=id]').val(id);
+				$('form.layui-form').find('.username').html(username);
+				form.on('submit(formAddDir)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"?act=create_dirs&p={{.cu_dir}}",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1 , time : 1000} , function(){
+									window.location.reload();
+								});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2 , time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2 , time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2 , time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+	$(".btnAddFile").click(function(){
+		if(addBoxIndex !== -1) return;
+		var id=$(this).attr("data-id");
+		var username=$(this).attr("data-user");
+		content=$("#addFileFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '创建文件',
+			content: content,
+			btn: ['保存', '取消'],
+			shade: false,
+			area: ['500px', '200px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formAddFile]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				$('form.layui-form').find('input[name=id]').val(id);
+				$('form.layui-form').find('.username').html(username);
+				form.on('submit(formAddFile)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"?act=create_files&p={{.cu_dir}}",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1 , time : 1000} , function(){
+									window.location.reload();
+								});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2 , time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2 , time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2 , time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+	$(".btnUpload").click(function(){
+		if(addBoxIndex !== -1) return;
+		var id=$(this).attr("data-id");
+		var username=$(this).attr("data-user");
+		content=$("#uploadFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '文件上传',
+			content: content,
+			btn: ['保存', '取消'],
+			shade: false,
+			area: ['500px', '200px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formUploadFile]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				$('form.layui-form').find('input[name=id]').val(id);
+				$('form.layui-form').find('.username').html(username);
+				form.on('submit(formUploadFile)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"?act=upload_files&p={{.cu_dir}}",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1 , time : 1000} , function(){
+									window.location.reload();
+								});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2 , time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2 , time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2 , time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+	$(".btnFileEdit").click(function(){
+		if(addBoxIndex !== -1) return;
+		var file = $(this).attr("data-file");
+		var url="/sys/filee?act=edit&t=f&p="+file;
+		addBoxIndex = layer.open({
+			type : 2,
+			title : "编辑文件",
+			content : url,
+			shade : false,
+			area : ['800px', '500px'],
+			zIndex : 200000,
+			end : function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+</script>

@@ -1,0 +1,269 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>编辑站点</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">站点域名</label>
+							<div class="layui-input-inline">
+								<div class="layui-form-mid">{{.m.Domain}}</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">绑定域名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="domains" value="{{.m.Domains}}" autocomplete="off" class="layui-input" placeholder="如:blog.wdlinux.cn">
+							</div>
+							<div class="layui-form-mid layui-word-aux">多个请用逗号“,”分隔</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">泛域名支持</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="domainm" lay-skin="switch" lay-text="打开|关闭" {{if eq .m.Domainm 1}}checked{{end}}  value="1">
+							</div>
+							<div class="layui-form-mid layui-word-aux"><span class="text-danger">对泛域名的支持，一般不需要开启</span></div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">https支持</label>
+							<div class="layui-input-inline">
+								<select name="ssl">
+							        <option value="0" {{if eq .m.Ssl 0}}selected="selected"{{end}}>不启用</option>
+							        <option value="1" {{if eq .m.Ssl 1}}selected="selected"{{end}}>启用</option>
+							        <option value="2" {{if eq .m.Ssl 2}}selected="selected"{{end}}>强制启用</option>
+							    </select>
+							</div>
+							<div class="layui-form-mid layui-word-aux">开启该功能，需要有SSL证书文件，否则无效。可以后台创建，也可自行上传，<a href="http://www.wdlinux.cn/bbs/thread-57572-1-1.html" target="_blank" class="text-normal">更多说明请看</a>&nbsp;<a href="/site/ssl" target="_blank" class="text-danger">证书上传</a></div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">PHP版本</label>
+							<div class="layui-input-inline">
+								<select name="phps">
+									{{str2html .phps}}
+        						</select>
+							</div>
+							<div class="layui-form-mid layui-word-aux">可指定PHP版本,无特别需要默认即可，<span class="text-danger">注意：指定PHP后，就是N+P，而不再有N+A</span></div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">站点目录</label>
+							<div class="layui-input-inline">
+								<div class="layui-form-mid">{{.m.Vhostdir}}</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">默认首页</label>
+							<div class="layui-input-inline">
+								<input type="text" name="dirindex" value="{{.m.Dirindex}}" autocomplete="off" class="layui-input" placeholder="index.html,index.php">
+							</div>
+							<div class="layui-form-mid layui-word-aux">如有多个，请用逗号“,”分隔</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">301/302跳转</label>
+							<div class="layui-input-inline">
+								<select name="redir">
+								    <option value="0" {{if eq .m.Redir 0}}selected="selected"{{end}}>不启用</option>
+							        <option value="1" {{if eq .m.Redir 1}}selected="selected"{{end}}>301跳转</option>
+							        <option value="2" {{if eq .m.Redir 2}}selected="selected"{{end}}>302跳转</option>
+							   </select>
+							</div>
+							<div class="layui-input-inline">
+								<input type="text" name="reurl" placeholder="跳转地址" autocomplete="off" class="layui-input" value="{{.m.Reurl}}">
+							</div>
+							<div class="layui-form-mid layui-word-aux">输入完整地址，不带http://，如www.wdlinux.cn</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">错误显示页</label>
+							<div class="layui-input-block">
+								<input name="err400" type="checkbox" lay-skin="primary" title="400" value="1"  {{if eq .m.Err400 1}}checked{{end}} /> 
+								<input name="err401" type="checkbox" lay-skin="primary" title="401" value="1"  {{if eq .m.Err401 1}}checked{{end}}/>
+								<input name="err403" type="checkbox" lay-skin="primary" title="403" value="1"  {{if eq .m.Err403 1}}checked{{end}} />
+								<input name="err404" type="checkbox" lay-skin="primary" title="404" value="1"  {{if eq .m.Err404 1}}checked{{end}} />
+								<input name="err405" type="checkbox" lay-skin="primary" title="405" value="1"  {{if eq .m.Err405 1}}checked{{end}}/> 
+								<input name="err500" type="checkbox" lay-skin="primary" title="500" value="1"  {{if eq .m.Err500 1}}checked{{end}}/> 
+								<input name="err503" type="checkbox" lay-skin="primary" title="503" value="1"  {{if eq .m.Err503 1}}checked{{end}} />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">访问日志</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="accesslog" lay-skin="switch" lay-text="打开|关闭" {{if eq .m.Accesslog 1}}checked{{end}} value="1">
+							</div>
+							<div class="layui-form-mid layui-word-aux">记录详细的访问日志，会占服务器资源，如无特别需求，不建议开启</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">错误日志</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="errorlog" lay-skin="switch" lay-text="打开|关闭" {{if eq .m.Errorlog 1}}checked{{end}} value="1">
+							</div>
+							<div class="layui-form-mid layui-word-aux">记录错误的访问日志和文件，也会占服务器资源，如无特别需求，不建议开启</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">gzip压缩</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="gzip" lay-skin="switch" lay-text="打开|关闭" {{if eq .m.Gzip 1}}checked{{end}} value="1">
+							</div>
+							<div class="layui-form-mid layui-word-aux">此功能为可将部分网页压缩传输，可以节省带宽</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">客户端缓存</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="expires" lay-skin="switch" lay-text="打开|关闭" {{if eq .m.Expires 1}}checked{{end}} value="1">
+							</div>
+							<div class="layui-form-mid layui-word-aux">此功能可减轻服务器负载，但有时更新可能不会及时显示</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">限制目录</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="limitdir" lay-skin="switch" lay-text="打开|关闭" {{if eq .m.Limitdir 1}}checked{{end}} value="1">
+							</div>
+							<div class="layui-form-mid layui-word-aux">此功能只限于运行apache服务器,防止webshell跨目录跨站,增加站点和服务器安全</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">浏览目录</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="dirlist" lay-skin="switch" lay-text="打开|关闭" {{if eq .m.Dirlist 1}}checked{{end}} value="1">
+							</div>
+							<div class="layui-form-mid layui-word-aux">表示在没有默认首页时,会显示网站上的所有文件列表</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">rewrite</label>
+							<div class="layui-input-inline">
+								<select name="rewrite">
+									{{str2html .rews}}
+								</select>
+							</div>
+							<div class="layui-form-mid layui-word-aux">如不知道或无使用，<a href="javascript:;" class="text-normal"  id="btnRewriteAdd">手工添加</a>也可以使用.htaccess格式，上传到网站根目录(public_html)下</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">使用端口</label>
+							<div class="layui-input-inline">
+								<select name="port">
+									{{str2html .ports}}
+								</select>
+							</div>
+							<div class="layui-form-mid layui-word-aux">只在需要使用非80端口时使用，否则请使用默认值。可在系统设置里设置或增加端口</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">使用IP</label>
+							<div class="layui-input-inline">
+								<select name="useip">
+									{{str2html .ips}}
+								</select>
+							</div>
+							<div class="layui-form-mid layui-word-aux">此功能只在多IP且要域名指定IP时用，否则请留默认值。可在系统设置里设置或增加IP</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">IP并发数</label>
+							<div class="layui-input-inline">
+								<input type="text" name="conn" autocomplete="off" class="layui-input" value="{{.m.Conn}}" placeholder="默认为0，即不限制">
+							</div>
+							<div class="layui-form-mid layui-word-aux">每IP的并发连接数</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">连接线程速度</label>
+							<div class="layui-input-inline">
+								<input type="text" name="bw" autocomplete="off" class="layui-input" value="{{.m.Bw}}" placeholder="默认为0，即不限制">
+							</div>
+							<div class="layui-form-mid layui-word-aux">每个连接线程的速度，单位KB/S</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">防盗链类型</label>
+							<div class="layui-input-inline">
+								<input type="text" name="lft" autocomplete="off" class="layui-input" value="{{.m.Lft}}" placeholder="默认为空，则不启用">
+							</div>
+							<div class="layui-form-mid layui-word-aux">如多个用逗号“,”分隔,如“jpg,gif,bmp”</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">允许的域名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="laurl" autocomplete="off" class="layui-input" value="{{.m.Laurl}}" placeholder="默认为空，则为绑定的域名" />
+							</div>
+							<div class="layui-form-mid layui-word-aux">此处可增加域名，如多个用逗号“,”分隔，不带http://，如wdlinux.cn,wdcdn.com</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">盗链图片地址</label>
+							<div class="layui-input-inline">
+								<input type="text" name="ldurl" autocomplete="off" class="layui-input" value="{{.m.Ldurl}}" placeholder="默认为空，则返回403">
+							</div>
+							<div class="layui-form-mid layui-word-aux">可访问的图片地址，不带http://，如www.wdlinux.cn/bbs/images/default/logo.gif</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">备注信息</label>
+							<div class="layui-input-inline">
+								<input type="text" name="note" class="layui-input" autocomplete="off"  value='{{.m.Note}}' placeholder="可选">
+							</div>
+						</div>
+						<div class="layui-form-item" style="margin-top:20px;">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{{.m.Id}}"/>
+								<input type="hidden" name="domain" value="{{.m.Domain}}"/>
+								<input type="hidden" name="furl" value="{{.furl}}"/>
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSiteEdit">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("form").submit(function(){
+		var url=location.href;
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode == 0){
+					layer.msg(data.msg, {icon: 1 , time : 1000},function(){
+						//获取当前选项卡ID
+						var tabid=top.tab.getCurrentTabId();
+						//切换到列表选项卡
+						top.tab.tabAdd({
+							href : '/site/list',
+							title : '站点列表'
+						});
+						//关闭当前选项卡
+                		top.tab.deleteTab(tabid);
+					});
+				}else if(data.errCode == 1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+	$("#btnRewriteAdd").click(function(){
+		if(addBoxIndex !== -1) return;
+		var url = "/site/rewrite?act=add";
+		var title = "增加规则";
+		addBoxIndex = layer.open({
+			type : 2,
+			title : title,
+			content : url,
+			shade : false,
+			area : ['800px', '500px'],
+			zIndex : 200000,
+			end : function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+</script>

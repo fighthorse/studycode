@@ -1,0 +1,65 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>内存管理</legend>
+				<div class="tools">
+					<button class="layui-btn layui-btn-primary layui-btn-small" onclick="location.reload()"><i class="layui-icon iconfont icon-refresh"></i>刷新</button>
+    				<button class="layui-btn layui-btn-warm layui-btn-small" onclick="act_confirm('确定要强制释放内存吗？','','act=release','reload');"><i class="layui-icon iconfont icon-delete"></i>强制释放内存</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<tbody>
+						<tr class="text-center">
+						    <td></td>
+						    <td>总内存</td>
+						    <td>已使用</td>
+						    <td>空闲</td>
+						    <td>缓存(cache)</td>
+						    <td>缓冲(buffer)</td>
+						</tr>
+						<tr class="text-center">
+						    <td>物理内存</td>
+						    <td>{{.m.memtotal}}</td>
+						    <td>{{.m.memuse}}</td>
+						    <td>{{.m.memfree}}</td>
+						    <td>{{.m.cached}}</td>
+						    <td>{{.m.buffers}}</td>
+						</tr>
+						<tr class="text-center">
+						    <td>实际使用内存</td>
+						    <td>{{.m.rtotal}}</td>
+						    <td>{{.m.ruse}}</td>
+						    <td>{{.m.rfree}}</td>
+						    <td></td>
+						    <td></td>
+						</tr>
+						<tr class="text-center">
+						    <td>交换分区(虚拟内存)</td>
+						    <td>{{.m.swaptotal}}</td>
+						    <td>{{.m.swapuse}}</td>
+						    <td>{{.m.swapfree}}</td>
+						    <td></td>
+						    <td></td>
+						</tr>
+						<tr class="text-center">
+						    <td>总共内存</td>
+						    <td>{{.m.total}}</td>
+						    <td>{{.m.totaluse}}</td>
+						    <td>{{.m.totalfree}}</td>
+						    <td></td>
+						    <td></td>
+						  </tr>
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:实际有效空闲内存为：空闲+缓存+缓冲<br />
+				        2:虚拟内存一般不会用到，但若大量使用时，系统性能会立马下降，影响较大<br />
+				        原则上，在安装系统时需要分配物理内存的两倍。<br />
+				        3:由于OpenVZ虚拟化限制，释放内存在OpenVZ VPS上无效
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

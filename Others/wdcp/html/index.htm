@@ -1,0 +1,230 @@
+<div class="layui-layout layui-layout-admin">
+		<div class="layui-header" id="top">
+			<div class="layui-logo">WD Control Panel</div>
+			<div class="admin-side-toggle">
+				<i class="layui-icon iconfont icon-breadcrumb" ></i>
+			</div>
+			<ul class="layui-nav layui-layout-right admin-header-nav">
+				<li class="layui-nav-item">
+					<a href="http://www.wdlinux.cn/bbs/" target="_blank" data-target="notab">交流论坛</a>
+				</li>
+				<li class="layui-nav-item">
+					<a href="/donation">捐赠赞助</a>
+				</li>
+				<li class="layui-nav-item">
+					<a href="javascript:;"> 
+						<i class="layui-icon iconfont icon-user" style="font-size: 15px; "></i> {{.curuser}}
+					</a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a href="/set/loginlog?">登录日志</a>
+						</dd>
+						<dd>
+							<a href="/member/chgpw?">修改密码</a>
+						</dd>
+						<dd>
+							<a href="javascript:;" onclick="act_confirm('确定要退出吗','/logout','','reload')">退出登录</a>
+						</dd>
+					</dl>
+				</li>
+			</ul>
+		</div>
+
+		<div class="layui-side layui-bg-black" id="admin-side">
+			<div class="layui-side-scroll">
+				<ul class="layui-nav layui-nav-tree" lay-filter="test">
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-setting" style="font-size: 15px; "></i> 系统设置</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/set/conf">系统设置</a>
+							</dd>
+							<dd>
+								<a href="/set/loginlog">登录日志</a>
+							</dd>
+							<dd>
+		                        <a href="/set/optlog">操作日志</a>
+		                    </dd>
+							<dd>
+		                        <a href="/set/task">计划任务</a>
+		                    </dd>
+							<dd>
+		                        <a href="/set/memcached">MemCached设置</a>
+							</dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-website" style="font-size: 15px; "></i> 网站管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/site/add">创建站点</a>
+							</dd>
+							<dd>
+		                        <a href="/site/list">站点列表</a>
+		                    </dd>
+							<dd>
+		                        <a href="/site/subdomain">二级域名</a>
+		                    </dd>
+							<dd>
+		                        <a href="/site/htpasswd">访问验证</a>
+		                    </dd>
+							<dd>
+		                        <a href="/site/rewrite">Rewrite规则管理</a>
+		                    </dd>
+							<dd>
+		                        <a href="/site/php">PHP设置</a>
+		                    </dd>
+							<dd>
+		                        <a href="/site/phps">PHP版本管理</a>
+		                    </dd>
+							<dd>
+		                        <a href="/site/ssl">SSL证书管理</a>
+							</dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-mysql" style="font-size: 15px; "></i> MYSQL管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/mysql/add">快速创建</a>
+							</dd>
+							<dd>
+		                        <a href="/mysql/list">数据库列表</a>
+		                    </dd>
+							<dd>
+		                        <a href="/mysql/chgrootpw">修改密码</a>
+		                    </dd>
+							<dd>
+		                        <a href="/mysql/set">MySQL设置</a>
+		                    </dd>
+							<dd>
+		                        <a href="{{.phpmyadmin}}" target="_blank" data-target="notab">phpMyAdmin</a>
+							</dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-ftp" style="font-size: 15px; "></i> FTP管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/ftp/add">增加账号</a>
+							</dd>
+							<dd>
+                        		<a href="/ftp/list">账号列表</a>
+							</dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-file" style="font-size: 15px; "></i> 文件管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+		                        <a href="/sys/file">文件管理</a>
+		                    </dd>
+		                    <dd>
+		                        <a href="/sys/syslog">系统日志</a>
+		                    </dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-resource" style="font-size: 15px; "></i> 资源管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/sys/top">系统负载</a>
+							</dd>
+							<dd>
+		                        <a href="/sys/disk">磁盘使用率</a>
+		                    </dd>
+		                    <dd>
+		                        <a href="/sys/traffic">网卡流量</a>
+							</dd>
+							<dd>
+		                        <a href="/sys/mem">内存管理</a>
+		                    </dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-users" style="font-size: 15px; "></i> 用户管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/member/list">用户管理</a>
+							</dd>
+							<dd>
+                        		<a href="/member/chgpw">修改密码</a>
+							</dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-system" style="font-size: 15px; "></i> 系统管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+		                        <a href="/sys/netstat">连接管理</a>
+		                    </dd>
+							<dd>
+		                        <a href="/sys/service">启动服务</a>
+		                    </dd>
+							<dd>
+		                        <a href="/sys/port">端口管理</a>
+		                    </dd>
+							<dd>
+		                        <a href="/sys/process">进程管理</a>
+		                    </dd>
+							<dd>
+		                        <a href="/sys/ifconfig">IP设置</a>
+		                    </dd>
+							<dd>
+		                        <a href="/sys/resolv">设置DNS</a>
+		                    </dd>
+							<dd>
+		                        <a href="/sys/cmd">运行命令</a>
+		                    </dd>
+							<dd>
+		                        <a href="/sys/server">服务重启</a>
+		                    </dd>
+							<dd>
+		                        <a href="/sys/time">时间设置</a>
+		                    </dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item ">
+						<a class="" href="javascript:;"><i class="layui-icon iconfont icon-safe" style="font-size: 15px; "></i> 安全管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/safe/iptables">防火墙设置</a>
+							</dd>
+							<dd>
+		                        <a href="/safe/selinux">Selinux设置</a>
+		                    </dd>
+							<dd>
+		                        <a href="/safe/ssh">SSH管理</a>
+		                    </dd>
+							<dd>
+		                        <a href="/safe/ping">ping开关</a>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="layui-body" id="admin-body">
+			<div class="layui-tab admin-nav-card layui-tab-brief" lay-filter="admin-tab">
+				<ul class="layui-tab-title" style="color: #fff;">
+					<li class="layui-this">
+						<i class="layui-icon iconfont icon-home"></i>
+						<cite>后台首页</cite>
+					</li>
+				</ul>
+				<div class="layui-tab-content ifm" style="min-height: 150px; padding: 0;">
+					<div class="layui-tab-item layui-show">
+						<iframe src="/set/index"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-footer text-center" id="admin-footer">
+			<!-- 底部固定区域 -->
+			&copy; 2010 wdCP &amp;&amp; WDlinux
+		</div>
+		<div class="site-tree-mobile">
+			<i class="iconfont icon-up-line"></i>
+		</div>
+	<div class="site-mobile-shade"></div>
+</div>

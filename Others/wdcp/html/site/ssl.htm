@@ -1,0 +1,162 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>SSL证书管理</legend>
+				<div class="tools">
+					<button class="layui-btn layui-btn-small" id="btnUpload"><i class="layui-icon iconfont icon-upload"></i>证书上传</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size='sm'>
+						<thead>
+							<tr>
+								<th class="text-center">文件名</th>
+								<th class="text-center">目录位置</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .list}}
+							<tr class="text-center">
+								<td>{{.file}}</td>
+							    <td>{{.path}}</td>
+							    <td>
+							    	<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定删除？','/sys/file','p={{.path}}/{{.file}}&act=del&t=f','reload');">删除</button>
+							    </td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:nginx证书文件存储在/www/wdlinux/nginx/conf/cert目录下<br>
+						2:apache证书文件存储在/www/wdlinux/apache/conf/cert目录下<br>
+						3:N+A环境，指定PHP版本等，只需要上传nginx的证书文件就可以<br>
+						4:单A引擎启用https证书时，需在“系统设置”里的“web服务端口”增加443，以及防火墙开放443端口
+					</blockquote>
+				</div>
+			</fieldset>
+			<!--上传模板 start-->
+			<script type="text/template" id="uploadFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="?act=uploadfile" enctype="multipart/form-data" id="uploadForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label">WEB服务器</label>
+							<div class="layui-input-inline" style="width:300px">
+								<select name="webs" lay-filter="webs">
+							        <option value="0">nginx</option>
+									<option value="1">apache</option>
+							    </select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">保存文件名</label>
+							<div class="layui-input-inline" style="width:300px">
+								<input type="text" name="filename" autocomplete="off" class="layui-input" placeholder="留空保留原名,可输入站点域名">
+							</div>
+							<div class="layui-form-mid layui-word-aux"></div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">crt或pem文件</label>
+							<div class="layui-input-inline" style="width:300px">
+								<input type="file" name="upfile1" required lay-verify="required">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">key文件</label>
+							<div class="layui-input-inline" style="width:300px">
+								<input type="file" name="upfile2" required lay-verify="required">
+							</div>
+						</div>
+						<div class="layui-form-item inputBundle" style="display: none">
+							<label class="layui-form-label">bundle文件</label>
+							<div class="layui-input-inline" style="width:300px">
+								<input type="file" name="upfile3" id="fileBundle">
+							</div>
+							
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formSslUpdate">提交</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							文件名需对应站点域名，如<br>站点域名是:wdlinux.cn，则证书文件为:wdlinux.cn.crt/wdlinux.cn.key<br/>
+							apache服务器特有的证书文件且以bundle_开头命名，如bundle_wdlinux.cn.(pem|crt)
+						</blockquote>
+					</form>
+				</div>
+			</script>
+		</div>
+	</div>
+</div>
+<script>
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$('#btnUpload').on('click', function() {
+		if(addBoxIndex !== -1) return;
+		content=$("#uploadFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '证书上传',
+			content: content,
+			btn: ['上传', '取消'],
+			shade: false,
+			area: ['800px', '500px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formSslUpdate]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				form.on('select(webs)',function(data){
+					if(data.value==0){
+						$(".inputBundle").hide();
+						$("#fileBundle").removeAttr('required').removeAttr('lay-verify');
+					}else{
+						$(".inputBundle").show();
+						$("#fileBundle").attr("required",true).attr("lay-verify","required");
+					}
+				});
+				form.on('submit(formSslUpdate)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"?act=uploadfile",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1, time : 1000},function(){
+									top.tab.tabAdd({
+										href : '/site/ssl',
+										title : 'SSL证书管理'
+									});
+								});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2, time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2, time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2, time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+
+</script>

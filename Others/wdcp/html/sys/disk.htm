@@ -1,0 +1,35 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>磁盘使用率</legend>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">文件系统</th>
+								<th class="text-center">总大小</th>
+								<th class="text-center">使用大小</th>
+								<th class="text-center">剩余可用</th>
+								<th class="text-center">使用率</th>
+								<th class="text-center">挂载点</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .disks}} 
+							<tr class="text-center">
+								<td>{{.fs}}</td>
+							    <td>{{.size}}</td>
+							    <td>{{.used}}</td>
+								<td>{{.avail}}</td>
+							    <td>{{.per}}</td>
+							    <td>{{.mount}}</td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

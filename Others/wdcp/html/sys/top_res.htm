@@ -1,0 +1,90 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>资源使用率</legend>
+				<div class="layui-field-box">
+					<table class="layui-table text-center" lay-size="sm">
+						<tr>
+						    <td>服务器运行时间</td>
+						    <td><span id="run_d">0</span>天<span id="run_h">0</span>小时<span id="run_m">0</span>分</td>
+						    <td></td>
+						    <td></td>
+						</tr>
+						<tr>
+						    <td><div align="center">系统负载</div></td>
+						    <td>1分钟</td>
+						    <td>5分钟</td>
+						    <td>15分钟</td>
+						</tr>
+						<tr>
+						    <td></td>
+						    <td><span id="load1">0</span></td>
+						    <td><span id="load2">0</span></td>
+						    <td><span id="load3">0</span></td>
+						</tr>
+						<tr>
+						    <td colspan="4"></td>
+						</tr>  
+						<tr>
+						    <td>内存使用率(单位M):</td>
+						    <td>总内存</td>
+						    <td>已使用</td>
+						    <td>空闲内存</td>
+						</tr>
+						<tr>
+						    <td>物理内存</td>
+						    <td><span id="memtotal">0</span></td>
+						    <td><span id="memuse">0</span></td>
+						    <td><span id="memfree">0</span></td>
+						</tr>
+						<tr>
+						    <td>实际使用内存</td>
+						    <td><span id="rtotal">0</span></td>
+						    <td><span id="ruse">0</span></td>
+						    <td><span id="rfree">0</span></td>
+						</tr>
+						<tr>
+						    <td>虚拟内存</td>
+						    <td><span id="swaptotal">0</span></td>
+						    <td><span id="swapuse">0</span></td>
+						    <td><span id="swapfree">0</span></td>
+						  </tr>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:服务器运行时间表示开机后到当前的一个时间<br>
+				        2:系统负载表示当前系统整体的一个负荷情况，1以下是表示系统没有什么负荷，大于10，表示系统的负荷有点大了<br>
+				        3:内存使用情况，以实际使用内存为准，因Linux的内存分配机制不同，有一部分是做缓存的，这部分实际上是属空闲的<br>
+				        4:虚拟内存一般不会用到,但若大量使用时,系统性能会立马下降,影响较大
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){getJSONData();});
+	function getJSONData()
+	{
+		setTimeout("getJSONData()", 1000);
+		$.getJSON('?act=rt&callback=', displayData);
+	}
+	function displayData(dataJSON)
+	{
+		$("#run_d").html(dataJSON.run_d);
+		$("#run_h").html(dataJSON.run_h);
+		$("#run_m").html(dataJSON.run_m);
+		$("#load1").html(dataJSON.load1);
+		$("#load2").html(dataJSON.load2);
+		$("#load3").html(dataJSON.load3);
+		$("#memtotal").html(dataJSON.memtotal);
+		$("#memuse").html(dataJSON.memuse);
+		$("#memfree").html(dataJSON.memfree);
+		$("#rtotal").html(dataJSON.rtotal);
+		$("#ruse").html(dataJSON.ruse);
+		$("#rfree").html(dataJSON.rfree);
+		$("#swaptotal").html(dataJSON.swaptotal);
+		$("#swapuse").html(dataJSON.swapuse);
+		$("#swapfree").html(dataJSON.swapfree);
+	}
+</script>

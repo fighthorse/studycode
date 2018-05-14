@@ -1,0 +1,440 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>创建站点</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">站点域名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="domain" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="如:wdlinux.cn">
+							</div>
+							<div class="layui-form-mid layui-word-aux"><span class="text-danger">* 不带http://，创建后不可修改</span></div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"></label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="is_www" lay-skin="switch" lay-text="是|否" value="1">
+							</div>
+							<div class="layui-form-mid layui-word-aux">添加www主机名，如：www.wdlinux.cn</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">站点目录</label>
+							<div class="layui-input-inline">
+								<input type="text" name="vhostdir" autocomplete="off" class="layui-input" placeholder="留空将使用域名为目录">
+							</div>
+							<div class="layui-form-mid layui-word-aux">可指定目录wdlinux或绝对目录/home/wdlinux，网站文件上传至public_html目录下</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">默认首页</label>
+							<div class="layui-input-inline">
+								<input type="text" name="dirindex" autocomplete="off" class="layui-input" placeholder="index.html,index.php">
+							</div>
+							<div class="layui-form-mid layui-word-aux">留空为默认值，多个用逗号“,”分隔</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">https支持</label>
+							<div class="layui-input-inline">
+								<select name="ssl" class="">
+							        <option value="0" selected="selected">不启用</option>
+							        <option value="1">启用</option>
+							        <option value="2">强制启用</option>
+							    </select>
+							</div>
+							<div class="layui-form-mid layui-word-aux">开启需要有SSL证书文件，否则无效。可后台创建或<a href="/site/ssl" class="text-danger">自行上传</a>，<a href="http://www.wdlinux.cn/bbs/thread-57572-1-1.html" data-target="notab" target="_blank" class="text-normal">更多说明</a>。</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">PHP版本</label>
+							<div class="layui-input-inline">
+								<select name="phps" class="">
+									{{str2html .phps}}
+        						</select>
+							</div>
+							<div class="layui-form-mid layui-word-aux">可指定PHP版本,一般默认即可，<span class="text-danger">注意：指定PHP后，就是N+P，而不再有N+A</span></div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">备注信息</label>
+							<div class="layui-input-inline">
+								<input type="text" name="note" autocomplete="off" class="layui-input" placeholder="可选">
+							</div>
+						</div>
+
+						<div class="layui-collapse" lay-accordion>
+							<div class="layui-colla-item">
+								<h2 class="layui-colla-title">创建FTP帐户<i class="layui-icon layui-colla-icon"></i></h2>
+								<div class="layui-colla-content">
+									<div class="layui-form-item">
+										<label class="layui-form-label"></label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="ftp_flag" lay-skin="switch" lay-text="是|否" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux"><span class="text-danger">创建FTP帐户</span></div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">用户名</label>
+										<div class="layui-input-inline">
+											<input type="text" name="ftpuser" autocomplete="off" class="layui-input" placeholder="3-12个字符">
+										</div>
+										<div class="layui-form-mid layui-word-aux">由字母、数字、下划线组成，且不可修改</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">密码</label>
+										<div class="layui-input-inline">
+											<input type="password" name="ftppasswd" autocomplete="off" class="layui-input" placeholder="6-15个字符">
+										</div>
+										<div class="layui-form-mid layui-word-aux">由字母、数字、下划线组成</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">确认密码</label>
+										<div class="layui-input-inline">
+											<input type="password" name="cftppasswd" autocomplete="off" class="layui-input" placeholder="请再输入一次">
+										</div>
+										<div class="layui-input-inline">
+											<button type="button" class="layui-btn layui-btn-small" id="ftprandom">随机密码</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						  	<div class="layui-colla-item">
+						    	<h2 class="layui-colla-title">创建数据库<i class="layui-icon layui-colla-icon"></i></h2>
+						    	<div class="layui-colla-content">
+						    		<div class="layui-form-item">
+										<label class="layui-form-label"></label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="db_flag" lay-skin="switch" lay-text="是|否" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux"><span class="text-danger">创建数据库</span></div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">数据库名</label>
+										<div class="layui-input-inline">
+											<input type="text" name="dbname" autocomplete="off" class="layui-input" placeholder="5-15个字符">
+										</div>
+										<div class="layui-form-mid layui-word-aux">由字母、数字、下划线组成，<span class="text-danger">不能全为数字</span></div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">用户名</label>
+										<div class="layui-input-inline">
+											<input type="text" name="dbuser" autocomplete="off" class="layui-input" placeholder="3-15个字符">
+										</div>
+										<div class="layui-form-mid layui-word-aux">由字母、数字、下划线组成，<span class="text-danger">不能全为数字</span></div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">密码</label>
+										<div class="layui-input-inline">
+											<input type="password" name="dbpasswd" autocomplete="off" class="layui-input" placeholder="6-15个字符">
+										</div>
+										<div class="layui-form-mid layui-word-aux">由字母、数字、下划线组成</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">确认密码</label>
+										<div class="layui-input-inline">
+											<input type="password" name="cdbpasswd" autocomplete="off" class="layui-input" placeholder="请再输入一次">
+										</div>
+										<div class="layui-input-inline">
+											<button type="button" class="layui-btn layui-btn-small" id="mysqlrandom">随机密码</button>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">编码</label>
+										<div class="layui-input-inline">
+											<select name="dbcharset">
+									            <option value="gbk">gbk</option>
+									            <option selected="selected" value="utf8">utf8</option>
+									            <option value="latin1">latin1</option>
+									        </select>
+										</div>
+										<div class="layui-form-mid layui-word-aux">数据库编码，一般是用utf8,gbk</div>
+									</div>
+								</div>
+						  	</div>
+						  	<div class="layui-colla-item">
+						  		<h2 class="layui-colla-title">绑定域名<i class="layui-icon layui-colla-icon"></i></h2>
+						  		<div class="layui-colla-content">
+						  			<div class="layui-form-item">
+										<label class="layui-form-label">泛域名支持</label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="domainm" lay-skin="switch" lay-text="打开|关闭" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux"><span class="text-danger">对泛域名的支持，一般不需要开启</span></div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">绑定域名</label>
+										<div class="layui-input-inline">
+											<input type="text" name="domains" autocomplete="off" class="layui-input" placeholder="如:blog.wdlinux.cn">
+										</div>
+										<div class="layui-form-mid layui-word-aux">多个请用逗号“,”分隔</div>
+									</div>
+						  		</div>
+						  	</div>
+						  	<div class="layui-colla-item">
+						  		<h2 class="layui-colla-title">防盗链设置<i class="layui-icon layui-colla-icon"></i></h2>
+						  		<div class="layui-colla-content">
+						  			<div class="layui-form-item">
+										<label class="layui-form-label">防盗链类型</label>
+										<div class="layui-input-inline">
+											<input type="text" name="lft" autocomplete="off" class="layui-input" placeholder="默认为空，则不启用">
+										</div>
+										<div class="layui-form-mid layui-word-aux">如多个用逗号“,”分隔,如“jpg,gif,bmp”</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">允许的域名</label>
+										<div class="layui-input-inline">
+											<input type="text" name="laurl" autocomplete="off" class="layui-input" placeholder="默认为空，则为绑定的域名">
+										</div>
+										<div class="layui-form-mid layui-word-aux">此处可增加域名，如多个用逗号“,”分隔，不带http://，如wdlinux.cn,wdcdn.com</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">盗链图片地址</label>
+										<div class="layui-input-inline">
+											<input type="text" name="ldurl" autocomplete="off" class="layui-input" placeholder="默认为空，则返回403">
+										</div>
+										<div class="layui-form-mid layui-word-aux">可访问的图片地址，不带http://，如www.wdlinux.cn/images/logo.png</div>
+									</div>
+						  		</div>
+						  	</div>
+						  	<div class="layui-colla-item">
+						  		<h2 class="layui-colla-title">页面跳转<i class="layui-icon layui-colla-icon"></i></h2>
+						  		<div class="layui-colla-content">
+						  			<div class="layui-form-item">
+										<label class="layui-form-label">301/302跳转</label>
+										<div class="layui-input-inline">
+											<select name="redir">
+										        <option value="0" selected="selected">不启用</option>
+										        <option value="1">301跳转</option>
+										        <option value="2">302跳转</option>
+										    </select>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">跳转地址</label>
+										<div class="layui-input-inline">
+											<input type="text" name="reurl" placeholder="跳转地址" autocomplete="off" class="layui-input" placeholder="输入完整地址">
+										</div>
+										<div class="layui-form-mid layui-word-aux">不带http://，如www.wdlinux.cn</div>
+									</div>
+						  		</div>
+						  	</div>
+						  	<div class="layui-colla-item">
+						  		<h2 class="layui-colla-title">错误页面<i class="layui-icon layui-colla-icon"></i></h2>
+						  		<div class="layui-colla-content">
+						  			<div class="layui-form-item">
+										<label class="layui-form-label">错误提示页</label>
+										<div class="layui-input-inline" style="width:500px">
+											<input name="err400" type="checkbox" lay-skin="primary" title="400" value="1" checked /> 
+									        <input name="err401" type="checkbox" lay-skin="primary" title="401" value="1" />
+									        <input name="err403" type="checkbox" lay-skin="primary" title="403" value="1" checked />
+									        <input name="err404" type="checkbox" lay-skin="primary" title="404" value="1" checked />
+									        <input name="err405" type="checkbox" lay-skin="primary" title="405" value="1" /> 
+									        <input name="err500" type="checkbox" lay-skin="primary" title="500" value="1" /> 
+									        <input name="err503" type="checkbox" lay-skin="primary" title="503" value="1" checked />
+									        <div class="layui-form-mid layui-word-aux">默认错误提示页位于errpage下，可自定义修改</div>
+										</div>
+										
+									</div>
+						  		</div>
+						  	</div>
+						  	<div class="layui-colla-item">
+						  		<h2 class="layui-colla-title">访问日志<i class="layui-icon layui-colla-icon"></i></h2>
+						  		<div class="layui-colla-content">
+						  			<div class="layui-form-item">
+										<label class="layui-form-label">详细日志</label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="accesslog" lay-skin="switch" lay-text="打开|关闭" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux">记录详细的访问日志，会占服务器资源，如无特别需求，不建议开启</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">错误日志</label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="errorlog" lay-skin="switch" lay-text="打开|关闭" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux">记录错误的访问日志和文件，也会占服务器资源，如无特别需求，不建议开启</div>
+									</div>
+						  		</div>
+						  	</div>
+						  	
+						  	<div class="layui-colla-item">
+						  		<h2 class="layui-colla-title">伪静态<i class="layui-icon layui-colla-icon"></i></h2>
+						  		<div class="layui-colla-content">
+						  			<div class="layui-form-item">
+										<label class="layui-form-label">Rewrite</label>
+										<div class="layui-input-inline">
+											<select name="rewrite">
+												{{str2html .rews}}
+											</select>
+										</div>
+										<div class="layui-form-mid layui-word-aux">如不知道或无使用，<a href="javascript:;" class="text-normal"  id="btnRewriteAdd">手工添加</a>。也可以使用.htaccess格式，上传到网站根目录(public_html)下</div>
+									</div>
+						  		</div>
+						  	</div>
+						  	<div class="layui-colla-item">
+						    	<h2 class="layui-colla-title">设置更多选项<i class="layui-icon layui-colla-icon"></i></h2>
+						    	<div class="layui-colla-content">
+						    		
+									
+									<div class="layui-form-item">
+										<label class="layui-form-label">gzip压缩</label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="gzip" lay-skin="switch" lay-text="打开|关闭" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux">此功能为可将部分网页压缩传输，可以节省带宽</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">客户端缓存</label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="expires" lay-skin="switch" lay-text="打开|关闭" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux">此功能可减轻服务器负载，但有时更新可能不会及时显示</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">限制目录</label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="limitdir" lay-skin="switch" lay-text="打开|关闭" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux">此功能只限于运行apache服务器,防止webshell跨目录跨站,增加站点和服务器安全</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">浏览目录</label>
+										<div class="layui-input-inline" style="width:60px">
+											<input type="checkbox" name="dirlist" lay-skin="switch" lay-text="打开|关闭" value="1">
+										</div>
+										<div class="layui-form-mid layui-word-aux">表示在没有默认首页时,会显示网站上的所有文件列表</div>
+									</div>
+									
+									<div class="layui-form-item">
+										<label class="layui-form-label">使用端口</label>
+										<div class="layui-input-inline">
+											<select name="port">
+												{{str2html .ports}}
+											</select>
+										</div>
+										<div class="layui-form-mid layui-word-aux">只在需要使用非80端口时使用，否则请使用默认值。可在系统设置里设置或增加端口</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">使用IP</label>
+										<div class="layui-input-inline">
+											<select name="useip">
+												{{str2html .ips}}
+											</select>
+										</div>
+										<div class="layui-form-mid layui-word-aux">此功能只在多IP且要域名指定IP时用，否则请留默认值。可在系统设置里设置或增加IP</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">IP并发数</label>
+										<div class="layui-input-inline">
+											<input type="text" name="conn" autocomplete="off" class="layui-input" pattern="默认为0，即不限制">
+										</div>
+										<div class="layui-form-mid layui-word-aux">每IP的并发连接数</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">连接线程速度</label>
+										<div class="layui-input-inline">
+											<input type="text" name="bw" autocomplete="off" class="layui-input" placeholder="默认为0，即不限制">
+										</div>
+										<div class="layui-form-mid layui-word-aux">每个连接线程的速度，单位KB/S</div>
+									</div>
+									
+								</div>
+						  	</div>
+						</div>
+						<div class="layui-form-item" style="margin-top:20px;">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSiteAdd">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							1:默认的网站根目录是 /www/web,如需要修改,在<a href="/set/conf" class="text-normal">系统设置</a>里的网站目录做修改即可,如:/home<br>
+							2:目录名只能使用字母，数字，下划线组成<br>
+							3:证书文件存放在cert目录下且以<span class="text-normal">站点域名</span>命名，如wdlinux.cn.cert/wdlinux.cn.key，<a href="http://www.wdlinux.cn/bbs/thread-57572-1-1.html" data-target="notab" target="_blank" class="text-normal">更多说明请看</a><br>
+							4:相应的选项可根据实际来选择，也可以使用默认值。最快速的方法：输入域名，FTP用户密码，数据库用户密码，点击 保存 即可
+						</blockquote>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("#ftprandom").click(function(){
+		var text='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-'; 
+		var rand = function(min, max){return Math.floor(Math.max(min, Math.random() * (max+1)));} 
+		var password = ''; 
+		for(i=0; i<8; ++i) 
+		{ 
+			password += text.charAt(rand(0, text.length)); 
+		} 
+		$("input[name=ftppasswd]").attr("type",'input').val(password);
+		$("input[name=cftppasswd]").attr("type",'input').val(password);
+	});
+	$("#mysqlrandom").click(function(){
+		var text='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-'; 
+		var rand = function(min, max){return Math.floor(Math.max(min, Math.random() * (max+1)));} 
+		var password = ''; 
+		for(i=0; i<8; ++i) 
+		{ 
+			password += text.charAt(rand(0, text.length)); 
+		} 
+		$("input[name=dbpasswd]").attr("type",'input').val(password);
+		$("input[name=cdbpasswd]").attr("type",'input').val(password);
+	});
+	$("form").submit(function(){
+		var url=location.href;
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode == 0){
+					layer.msg(data.msg, {icon: 1 , time : 1000},function(){
+						//获取当前选项卡ID
+						var tabid=top.tab.getCurrentTabId();
+						//切换到列表选项卡
+						top.tab.tabAdd({
+							href : '/site/list',
+							title : '站点列表'
+						});
+						//关闭当前选项卡
+                		top.tab.deleteTab(tabid);
+					});
+				}else if(data.errCode == 1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+	$("#btnRewriteAdd").click(function(){
+		if(addBoxIndex !== -1) return;
+		var url = "/site/rewrite?act=add";
+		var title = "增加规则";
+		addBoxIndex = layer.open({
+			type : 2,
+			title : title,
+			content : url,
+			shade : false,
+			area : ['800px', '500px'],
+			zIndex : 200000,
+			end : function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+</script>

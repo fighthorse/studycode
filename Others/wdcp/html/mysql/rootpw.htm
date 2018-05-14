@@ -1,0 +1,67 @@
+<div class="layui-main">
+  <div class="layui-row">
+    <div class="layui-col-md12">
+      <fieldset class="layui-elem-field">
+        <legend>设置root密码</legend>
+        <div class="layui-field-box">
+          <form class="layui-form" method="post">
+            <div class="layui-form-item">
+              <label class="layui-form-label">密码</label>
+              <div class="layui-input-inline" style="width:280px">
+                <input type="password" name="npass" required lay-verify="required" placeholder="输入root密码" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">确认密码</label>
+              <div class="layui-input-inline" style="width:280px">
+                <input type="password" name="cpass" required lay-verify="required" placeholder="确认密码" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn layui-btn-small" lay-submit lay-filter="formMysqlrootpw">提交</button>
+                <button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+              </div>
+            </div>
+            <blockquote class="layui-elem-quote">
+              1.<span class="text-normal">这里设置是指mysql数据库root用户的密码,输入你原来使用的mysql数据库root用户的密码</span><br>
+              2.wdcp后台创建mysql数据库及用户都需要用到此密码，否则功能使用受限及无法创建数据库
+            </blockquote>
+          </form>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  layui.use('form', function() {
+  var $ = layui.jquery;
+  var addBoxIndex = -1;
+  $("form").submit(function(){
+    var url=location.href;
+    var formData=new FormData($(this)[0]);
+    $.ajax({
+      url:url,
+      type: 'POST',  
+          data: formData,  
+          async: false,  
+          cache: false,  
+          contentType: false,  
+          processData: false, 
+      success:function(data){
+        if(data.errCode==0){
+          layer.msg(data.msg, {icon: 1 , time : 1000});
+        }else if(data.errCode==1){
+          layer.msg(data.msg, {icon: 2 , time : 1000});
+        }else{
+          layer.msg("数据错误", {icon: 2 , time : 1000});
+        }
+      },
+      error:function(data){
+        layer.msg("网络错误", {icon: 2 , time : 1000});
+      }
+    });
+    return false; //阻止表单提交  
+  });
+});
+</script>

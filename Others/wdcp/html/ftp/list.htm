@@ -1,0 +1,241 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>用户列表</legend>
+				<div class="tools">
+					<form class="layui-form" method="get">
+						<div class="layui-form-item">
+							<div class="layui-input-inline" style="width: 80px;">
+								<a class="layui-btn layui-btn-small" href="/ftp/add"><i class="layui-icon iconfont icon-plus"></i>增加账号</a>
+							</div>
+							<div class="layui-input-inline" style="width: 120px;margin-right: 0px">
+								<input type="text" name="keyword" placeholder="搜索FTP用户" autocomplete="off" class="layui-input" style="height:30px">
+							</div>
+							<div class="layui-input-inline" style="width: 35px;margin-left:-1px;margin-right:0">
+					        	<button type="submit" class="layui-btn layui-btn-primary layui-btn-small"><i class="iconfont icon-search"></i></button>
+					        </div>
+						</div>
+					</form>
+				</div>
+				<div class="layui-field-box">
+					<form class="layui-form">
+					<table class="layui-table" lay-size='sm'>
+						<thead>
+							<tr>
+								<th class="text-center">ID</th>
+								<th class="text-center">用户名</th>
+								<th class="text-center">目录</th>
+								<th class="text-center">站点/备注</th>
+								<th class="text-center">创建时间</th>
+								<th class="text-center">状态</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .ftps}}
+							<tr class="text-center">
+								<td>{{.Id}}</td>
+							    <td class="text-left">{{.Username}}</td>
+							    <td class="text-left">{{.Dir}}</td>
+							    <td class="text-left">{{.Note}}</td>
+								<td>{{dateformat .Ctime "2006-01-02"}}</td>
+							    <td>
+							    	<input type="checkbox" lay-skin='switch' data-id="{{.Id}}" lay-text="开启|关闭" {{if eq .Status 0}}checked{{end}}>
+							    </td>
+							    <td style="min-width: 160px;">
+							    	<button class="layui-btn layui-btn-mini btnFtpEdit" class="layui-btn layui-btn-warm layui-btn-mini" data-id="{{.Id}}" onclick="return false">编辑</button> 
+							    	<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定删除？','/ftp/del','id={{.Id}}','reload');return false">删除</button> 
+							    	<button class="layui-btn layui-btn-primary layui-btn-mini" onclick="act_confirm('确定要备份吗','/sys/backup','act=bk&t=ftp&name=&p={{.Dir}}');return false" title="打包备份">备份</button> 
+							    	<button class="layui-btn layui-btn-warm layui-btn-mini btnFtpChg" data-id="{{.Id}}" data-user="{{.Username}}" onclick="return false">改密</button> 
+							    </td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					</form>
+					<div class="layui-laypage">
+						{{str2html .pageBar}}
+					</div>
+				</div>
+			</fieldset>
+			<!--修改密码模板 start-->
+			<script type="text/template" id="chgFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="/ftp/chpwd" enctype="multipart/form-data" id="chpwdForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">用户名</label>
+							<div class="layui-input-inline">
+								<div class="layui-form-mid username"></div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">原密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="password" placeholder="请输入原密码" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">新密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="password1" required placeholder="6-15个字符" lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">字母、数字、下划线</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">确认密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="password2" required placeholder="请确认新密码" lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-input-inline" style="width: 70px">
+								<button type="button" class="layui-btn layui-btn-small" onclick="randompass()">随机密码</button>
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<input type="hidden" name="id"/>
+								<button class="layui-btn" lay-submit lay-filter="formFtpChgpw">提交</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							使用超级管理员admin修改时，原密码可以不用输入
+						</blockquote>
+					</form>
+				</div>
+			</script>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	function randompass(){
+		var text='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-'; 
+		var rand = function(min, max){return Math.floor(Math.max(min, Math.random() * (max+1)));} 
+		var password = ''; 
+		for(i=0; i<8; ++i) 
+		{ 
+			password += text.charAt(rand(0, text.length)); 
+		}
+		$("input[name=password1]").attr("type",'input').val(password);
+		$("input[name=password2]").attr("type",'input').val(password);
+	}
+	layui.use('form', function() {
+		var addBoxIndex = -1;
+		var form = layui.form;
+		var $ = layui.jquery;
+		
+		form.on('switch',function(check){
+			var msg = check.elem.checked ? "确定要开启吗" : "确定要关闭吗";
+			var id = $(check.elem).attr("data-id");
+			var act = check.elem.checked ? "id="+id+"&act=on" : "id="+id+"&act=off";
+			var url = "/ftp/status";
+			layer.open({
+				content : msg,
+				icon : 3,
+				title : '系统提示',
+				btn:['确定','取消'],
+				yes : function () {
+					$.ajax({
+						url : url,
+						data : act,
+						type : 'get',  
+						success : function(data){
+							if(data.errCode == 0){
+								layer.msg(data.msg, {icon: 1 , time : 1000});
+							}else if(data.errCode == 1){
+								layer.msg(data.msg, {icon: 2 , time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2 , time : 1000});
+							}
+						},
+						error : function(data){
+							layer.alert("网络错误" , {icon : 2 , title : "系统提示" , time : 1000});
+							$(check.elem).prop("checked" , !check.elem.checked);
+							form.render("checkbox");
+						}
+					});
+
+			    }, btn2 : function(){
+			    	$(check.elem).prop("checked" , !check.elem.checked);
+					form.render("checkbox");
+			    }, cancel : function(){
+			    	$(check.elem).prop("checked" , !check.elem.checked);
+					form.render("checkbox");
+				}
+			});
+			return false;
+		});
+		
+		$(".btnFtpChg").click(function(){
+			if(addBoxIndex !== -1) return;
+			var id=$(this).attr("data-id");
+			var username=$(this).attr("data-user");
+			content=$("#chgFormSet").html();
+			addBoxIndex = layer.open({
+				type: 1,
+				title: '修改密码',
+				content: content,
+				btn: ['保存', '取消'],
+				shade: false,
+				area: ['500px', '400px'],
+				zIndex: 200000,
+				yes: function(index) {
+					//触发表单的提交事件
+					$('form.layui-form').find('button[lay-filter=formFtpChgpw]').click();
+				},
+				success: function(layero, index) {
+					//弹出窗口成功后渲染表单
+					var form = layui.form;
+					form.render();
+					$('form.layui-form').find('input[name=id]').val(id);
+					$('form.layui-form').find('.username').html(username);
+					form.on('submit(formFtpChgpw)', function(data) {
+						var formData=new FormData(data.form);
+						$.ajax({
+							url:"/ftp/chpwd",
+							type: 'POST',  
+					        data: formData,  
+					        async: false,  
+					        cache: false,  
+					        contentType: false,  
+					        processData: false, 
+							success:function(data){
+								if(data.errCode==0){
+									layer.msg(data.msg, {icon: 1 , time : 1000} ,function(){
+										layer.close(addBoxIndex);
+									});
+								}else if(data.errCode==1){
+									layer.msg(data.msg, {icon: 2 , time : 1000});
+								}else{
+									layer.msg("数据错误", {icon: 2 , time : 1000});
+								}
+							},
+							error:function(data){
+								layer.msg("网络错误", {icon: 2 , time : 1000});
+							}
+						});
+						return false; //阻止表单提交								
+					});
+				},
+				end: function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+		$(".btnFtpEdit").click(function(){
+			if(addBoxIndex !== -1) return;
+			var id = $(this).attr("data-id");
+			var url = "/ftp/edit?id="+id;
+			addBoxIndex = layer.open({
+				type : 2,
+				title : "FTP编辑",
+				content : url,
+				shade : false,
+				area : ['560px', '435px'],
+				zIndex : 200000,
+				end : function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+	});
+</script>

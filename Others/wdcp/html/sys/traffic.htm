@@ -1,0 +1,106 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>网卡流量</legend>
+				<div class="layui-field-box">
+					<table class="layui-table text-center" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">网卡名</th>
+							    <th class="text-center">流向</th>
+							    <th class="text-center">总流量</th>
+							    <th class="text-center">实时流量</th>
+							    <th class="text-center">数据包</th>
+							    <th class="text-center">错误包</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .trs}}
+							<tr class="text-center">
+								<td rowspan="2">{{.nn}}</td>
+								<td>发送</td>
+							    <td><span id="ts{{.id}}">0</span></td>
+							    <td><span id="trs{{.id}}">0</span></td>
+							    <td><span id="tp{{.id}}">0</span></td>
+							    <td><span id="ter{{.id}}">0</span></td>
+							</tr>
+							<tr class="text-center">
+								<td>接收</td>
+							    <td><span id="rs{{.id}}">0</span></td>
+							    <td><span id="rrs{{.id}}">0</span></td>
+							    <td><span id="rp{{.id}}">0</span></td>
+							    <td><span id="rer{{.id}}">0</span></td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:lo表示本地环路连接<br>
+      					2:OpenVZ虚拟机/VPS上的实时流量可能会有误
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){getJSONData();});
+function getJSONData()
+{
+	setTimeout("getJSONData()", 1000);
+	$.getJSON('?act=rt&callback=', displayData);
+}
+function displayData(dataJSON)
+{
+	$("#ts0").html(dataJSON.ts0);
+	$("#trs0").html(dataJSON.trs0);
+	$("#tp0").html(dataJSON.tp0);
+	$("#ter0").html(dataJSON.ter0);
+	$("#rs0").html(dataJSON.rs0);
+	$("#rrs0").html(dataJSON.rrs0);
+	$("#rp0").html(dataJSON.rp0);
+	$("#rer0").html(dataJSON.rer0);
+	$("#ts1").html(dataJSON.ts1);
+	$("#trs1").html(dataJSON.trs1);
+	$("#tp1").html(dataJSON.tp1);
+	$("#ter1").html(dataJSON.ter1);
+	$("#rs1").html(dataJSON.rs1);
+	$("#rrs1").html(dataJSON.rrs1);
+	$("#rp1").html(dataJSON.rp1);
+	$("#rer1").html(dataJSON.rer1);
+	$("#ts2").html(dataJSON.ts2);
+	$("#trs2").html(dataJSON.trs2);
+	$("#tp2").html(dataJSON.tp2);
+	$("#ter2").html(dataJSON.ter2);
+	$("#rs2").html(dataJSON.rs2);
+	$("#rrs2").html(dataJSON.rrs2);
+	$("#rp2").html(dataJSON.rp2);
+	$("#rer2").html(dataJSON.rer2);
+	$("#ts3").html(dataJSON.ts3);
+	$("#trs3").html(dataJSON.trs3);
+	$("#tp3").html(dataJSON.tp3);
+	$("#ter3").html(dataJSON.ter3);
+	$("#rs3").html(dataJSON.rs3);
+	$("#rrs3").html(dataJSON.rrs3);
+	$("#rp3").html(dataJSON.rp3);
+	$("#rer3").html(dataJSON.rer3);
+	$("#ts4").html(dataJSON.ts4);
+	$("#trs4").html(dataJSON.trs4);
+	$("#tp4").html(dataJSON.tp4);
+	$("#ter4").html(dataJSON.ter4);
+	$("#rs4").html(dataJSON.rs4);
+	$("#rrs4").html(dataJSON.rrs4);
+	$("#rp4").html(dataJSON.rp4);
+	$("#rer4").html(dataJSON.rer4);
+	$("#ts5").html(dataJSON.ts5);
+	$("#trs5").html(dataJSON.trs5);
+	$("#tp5").html(dataJSON.tp5);
+	$("#ter5").html(dataJSON.ter5);
+	$("#rs5").html(dataJSON.rs5);
+	$("#rrs5").html(dataJSON.rrs5);
+	$("#rp5").html(dataJSON.rp5);
+	$("#rer5").html(dataJSON.rer5);
+
+}
+</script>

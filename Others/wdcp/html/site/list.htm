@@ -1,0 +1,548 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>站点列表</legend>
+				<div class="tools">
+					<form class="layui-form" method="get">
+						<div class="layui-form-item">
+							<div class="layui-input-inline" style="width: 220px;">
+								<button type="button" class="layui-btn layui-btn-small" onclick="act_confirm('确定要更新站点设置？','','act=update');return false;"><i class="layui-icon iconfont icon-refresh"></i>更新站点设置</button>
+								<button type="button" class="layui-btn layui-btn-normal layui-btn-small" id="btnCfc" onclick="return false;"><i class="layui-icon iconfont icon-check-circle"></i>配置文件检查</button>
+							</div>
+							<div class="layui-input-inline" style="width: 100px;">
+								<select name="dt" class="layui-input-small">
+							        <option value="1">域名</option>
+							        <option value="2">绑定域名</option>
+							    </select>
+							</div>
+							<div class="layui-input-inline" style="width: 150px;margin-left:-11px;margin-right:0">
+								<input type="text" name="keyword" placeholder="搜索域名" autocomplete="off" class="layui-input layui-input-small">
+							</div>
+							<div class="layui-input-inline" style="width: 35px;margin-left:-1px;margin-right:0">
+					        	<button type="submit" class="layui-btn layui-btn-primary layui-btn-small"><i class="iconfont icon-search"></i></button>
+					        </div>
+						</div>
+					</form>
+				</div>
+				<div class="layui-field-box">
+					<form class="layui-form">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">ID</th>
+								<th class="text-center">站点域名</th>
+								<th class="text-center">绑定域名</th>
+								<th class="text-center">目录</th>
+								<th class="text-center">SSL</th>
+								<th class="text-center">开通时间</th>
+								<th class="text-center">PHP</th>
+								<th class="text-center">状态</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .sites}}
+							<tr class="text-center">
+								<td>{{.Id}}</td>
+							    <td class="text-left">
+							    	<a href="http://{{.Domain}}" class="text-normal" data-target="notab" target="_blank">{{.Domain}}</a> &nbsp;
+							    	{{if .Note}}<a href="javascript:;" class="tooltip" data-tips="{{.Note}}"><i class="iconfont icon-about"></i></a>{{end}}
+							    </td>
+							    <td class="text-left">{{.Domains | linetobr}}</td>
+							    <td class="text-left">{{.Vhostdir}}</td>
+							    <td><button class="layui-btn layui-btn-primary layui-btn-mini btnSslSet" data-id="{{.Id}}" data-val="{{.Ssl}}" data-domain="{{.Domain}}" data-dir="{{.Vhostdir}}" onclick="return false">{{if ge .Ssl 1}}是{{else}}否{{end}}</button></td>
+							    <td>{{dateformat .Ctime "2006-01-02"}}</td>
+							    <td><button class="layui-btn layui-btn-primary layui-btn-mini btnPhpVer" data-id="{{.Id}}" data-val="{{.Phps}}" onclick="return false">{{if eq .Phps "0"}}默认{{else}}{{.Phps}}{{end}}</button></td>
+							    <td>
+									<input type="checkbox" lay-skin='switch' data-id="{{.Id}}" lay-text="开启|关闭" {{if eq .Status 0}}checked{{end}}>
+							    </td>
+							    <td style="width:225px">
+							    	<a class="layui-btn layui-btn-primary layui-btn-mini tooltip" href="/site/edit?id={{.Id}}" data-title="编辑站点" data-tips="编辑站点"><i class="iconfont icon-edit"></i></a>
+							    	<a class="layui-btn layui-btn-normal layui-btn-mini tooltip" href="/sys/file?p={{.Vhostdir}}" data-title="文件管理" data-tips="文件管理"><i class="iconfont icon-file"></i></a> 
+							    	<button class="layui-btn layui-btn-normal layui-btn-mini tooltip tooltip" onclick="act_confirm('确定要打包备份？','/sys/backup','act=bk&t=web&name=&p={{.Vhostdir}}');;return false;" data-tips="打包备份"><i class="iconfont icon-backup"></i></button> 
+									<a class="layui-btn layui-btn-warm layui-btn-mini tooltip" href="/site/subdomain?sid={{.Id}}" data-title="二级域名" data-tips="二级域名"><i class="iconfont icon-subdomain"></i></a> 
+							    	<button class="layui-btn layui-btn-mini tooltip htpasswd" data-sid="{{.Id}}" data-domain="{{.Domain}}" data-title="访问验证" data-tips="访问验证" onclick="return false"><i class="iconfont icon-validate"></i></button>
+							    	{{if eq .Lock 0}}
+							    	<button class="layui-btn layui-btn-warm layui-btn-mini tooltip" onclick="act_confirm('确定要锁定站点配置文件？','/site/list','act=lock&id={{.Id}}&domain=wdcp.cn','reload');;return false;" data-tips="锁定站点配置文件"><i class="iconfont icon-lock"></i></button>
+							    	{{else}}
+							    	<button class="layui-btn layui-btn-primary layui-btn-mini tooltip" onclick="act_confirm('确定要解除站点配置文件锁定？','/site/list','act=unlock&id={{.Id}}&domain=wdcp.cn','reload');;return false;" data-tips="解除锁定站点配置文件"><i class="iconfont icon-unlock"></i></button>
+							    	{{end}} 
+									<button class="layui-btn layui-btn-danger layui-btn-mini tooltip" onclick="act_confirm('确定要删除站点？','/site/del','id={{.Id}}&domain={{.Domain}}','reload');return false;" data-tips="删除站点"><i class="iconfont icon-delete"></i></button> 
+							    </td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					</form>
+					<div class="layui-laypage">
+						{{str2html .pageBar}}
+					</div>
+					<blockquote class="layui-elem-quote">
+						1:更新站点设置 是指更新所有站点的虚拟主机配置,此功能一般用不到,只有在变更环境或迁移服务器时用于重新更新所有站点的配置<br>
+						2:二级域名 指用该域名下的二级域名站点的增加和管理<br>
+						5:文件管理 指站点目录下的文件管理器<br>
+						6:访问验证 指设置站点为部分用户验证后可以访问<br>
+						7:锁定配置文件，避免更新覆盖，在手动修改过虚拟主机配置文件时，非常好用<br>
+						8:指定PHP版本，需要在多版本PHP管理里启动，且伪静态，SSL等都是使用Nginx引擎的格式<br>
+						9:创建lets证书需在正常的网站上才可创建成功，更多的说明请看 <a href="http://www.wdlinux.cn/bbs/thread-57840-1-1.html" target="_blank" class="text-normal" data-target="notab"> 创建lets证书</a>
+					</blockquote>
+				</div>
+			</fieldset>
+			<!-- 设置SSL模板 -->
+			<script type="text/template" id="sslFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="/site/list?act=tossl" id="addForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:50px">操作</label>
+							<div class="layui-input-block" style="margin-left:80px">
+								<select name="sid">
+          							<option value="0">不启用</option>
+          							<option value="1">启用</option>
+          							<option value="2">强制启用</option>
+    							</select>
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<input type="hidden" name="id">
+								<button class="layui-btn" lay-submit lay-filter="formSslSet">提交</button>
+							</div>
+						</div>
+						
+					</form>
+				</div>
+			</script>
+			<!-- 设置PHP模板 -->
+			<script type="text/template" id="phpsFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="/site/list?act=tophp" id="addForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:50px">操作</label>
+							<div class="layui-input-block" style="margin-left:80px">
+								<select name="phps">
+          							
+    							</select>
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<input type="hidden" name="id">
+								<button class="layui-btn" lay-submit lay-filter="formPhpsSet">提交</button>
+							</div>
+						</div>
+						
+					</form>
+				</div>
+			</script>
+			<!--证书上传模板 start-->
+			<script type="text/template" id="uploadFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="/site/ssl?act=uploadfile" enctype="multipart/form-data" id="uploadForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label">WEB服务器</label>
+							<div class="layui-input-inline" style="width:300px">
+								<select name="webs" lay-filter="webs">
+							        <option value="0">nginx</option>
+									<option value="1">apache</option>
+							    </select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">保存文件名</label>
+							<div class="layui-input-inline" style="width:300px">
+								<input type="text" name="filename" autocomplete="off" class="layui-input" placeholder="留空保留原名,可输入站点域名">
+							</div>
+							<div class="layui-form-mid layui-word-aux"></div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">crt或pem文件</label>
+							<div class="layui-input-inline" style="width:300px">
+								<input type="file" name="upfile1" required lay-verify="required">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">key文件</label>
+							<div class="layui-input-inline" style="width:300px">
+								<input type="file" name="upfile2" required lay-verify="required">
+							</div>
+						</div>
+						<div class="layui-form-item inputBundle" style="display: none">
+							<label class="layui-form-label">bundle文件</label>
+							<div class="layui-input-inline" style="width:300px">
+								<input type="file" name="upfile3" id="fileBundle">
+							</div>
+							<div class="layui-form-mid layui-word-aux">文件名为bundle_domain.(pem|crt)</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formSslUpdate">提交</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							文件名对应站点域名，如站点域名是:wdlinux.cn，则证书文件为:wdlinux.cn.cert/wdlinux.cn.key<br/>
+							apache服务器特有证书文件且以bundle_开头命名，如bundle_wdlinux.cn.(pem|crt)
+						</blockquote>
+					</form>
+				</div>
+			</script>
+			<!--访问验证增加模板 start-->
+			<script type="text/template" id="htFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="?act=add">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">用户名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="username" required lay-verify="required" placeholder="3-15个字符，由字母、数字、下划线组成" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="pass1" required lay-verify="required" placeholder="6-15个字符，由字母、数字、下划线组成" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">确认密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="pass2" required lay-verify="required" placeholder="请再输入一次" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-input-inline" style="width: 70px">
+								<button type="button" class="layui-btn layui-btn-small" onclick="randompass()">随机密码</button>
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<input type="hidden" name="sid">
+          						<input type="hidden" name="domain">
+								<button class="layui-btn" lay-submit lay-filter="formHtuserAdd">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</script>
+			<div style="display: none" id="phps">
+				{{str2html .tophp}}
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function randompass(){
+	var text='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-'; 
+	var rand = function(min, max){return Math.floor(Math.max(min, Math.random() * (max+1)));} 
+	var password = ''; 
+	for(i=0; i<8; ++i) 
+	{ 
+		password += text.charAt(rand(0, text.length)); 
+	}
+	$("input[name=pass1]").attr("type",'input').val(password);
+	$("input[name=pass2]").attr("type",'input').val(password);
+}
+	layui.use('form', function() {
+		var form = layui.form;
+		var $ = layui.$;
+		form.on('switch',function(check){
+			var msg = check.elem.checked ? "确定要开启站点吗" : "确定要关闭站点吗";
+			var id = $(check.elem).attr("data-id");
+			var act = check.elem.checked ? "id="+id+"&act=on&domain=wdcp.cn" : "id="+id+"&act=off&domain=wdcp.cn";
+			var url = "/site/list";
+			layer.open({
+				content : msg,
+				icon : 3,
+				title : '系统提示',
+				btn:['确定','取消'],
+				yes : function () {
+					$.ajax({
+						url : url,
+						data : act,
+						type : 'get',  
+						success : function(data){
+							if(data.errCode == 0){
+								layer.msg(data.msg, {icon: 1 , time : 1000});
+							}else if(data.errCode == 1){
+								layer.msg(data.msg, {icon: 2 , time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2 , time : 1000});
+							}
+						},
+						error : function(data){
+							layer.alert("网络错误" , {icon : 2 , title : "系统提示" , time : 1000});
+							$(check.elem).prop("checked" , !check.elem.checked);
+							form.render("checkbox");
+						}
+					});
+
+			    }, btn2 : function(){
+			    	$(check.elem).prop("checked" , !check.elem.checked);
+					form.render("checkbox");
+			    }, cancel : function(){
+			    	$(check.elem).prop("checked" , !check.elem.checked);
+					form.render("checkbox");
+				}
+			});
+			return false;
+		});
+		//监听提交
+		var addBoxIndex = -1;
+		$("#btnCfc").click(function(){
+			if(addBoxIndex !== -1) return;
+			addBoxIndex = layer.open({
+				type: 2,
+				title: '配置文件检查',
+				content: '?act=cfc',
+				shade: false,
+				area: ['800px', '500px'],
+				zIndex: 200000,
+				end: function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+		$(".htpasswd").on('click',function(){
+			if(addBoxIndex !== -1) return;
+			var sid=$(this).attr('data-sid');
+			var domain=$(this).attr('data-domain');
+			content=$("#htFormSet").html();
+			addBoxIndex = layer.open({
+				type: 1,
+				title: '访问验证用户添加',
+				content: content,
+				btn: ['保存','取消'],
+				shade: false,
+				area: ['400px', '300px'],
+				zIndex: 200000,
+				yes: function(index) {
+					//触发表单的提交事件
+					$('form.layui-form').find('button[lay-filter=formHtuserAdd]').click();
+				},
+				success: function(layero, index) {
+					//弹出窗口成功后渲染表单
+					var form = layui.form;
+					form.render();
+					$('form.layui-form').find('input[name=sid]').val(sid);
+					$('form.layui-form').find('input[name=domain]').val(domain);
+					form.render();
+					form.on('submit(formHtuserAdd)', function(data) {
+						var formData=new FormData(data.form);
+						$.ajax({
+							url:"/site/htpasswd?act=adds",
+							type: 'post',  
+					        data: formData,  
+					        async: false,  
+					        cache: false,  
+					        contentType: false,  
+					        processData: false, 
+							success:function(data){
+								if(data.errCode==0){
+									layer.msg(data.msg, {icon: 1, time : 1000},function(){
+										layer.close(addBoxIndex);
+									});
+								}else if(data.errCode==1){
+									layer.msg(data.msg, {icon: 2, time : 1000});
+								}else{
+									layer.msg("数据错误", {icon: 2, time : 1000});
+								}
+							},
+							error:function(data){
+								layer.msg("网络错误", {icon: 2, time : 1000});
+							}
+						});
+						return false; //阻止表单提交								
+					});
+				},
+				end: function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+		$('.btnSslSet').on('click', function() {
+			if(addBoxIndex !== -1) return;
+			var id=$(this).attr('data-id');
+			var val=$(this).attr('data-val');
+			var domain=$(this).attr('data-domain');
+			var dir=$(this).attr('data-dir');
+			content=$("#sslFormSet").html();
+			addBoxIndex = layer.open({
+				type: 1,
+				title: '修改SSL状态',
+				content: content,
+				btn: ['保存', '创建lets证书并启用','上传证书' ,'取消'],
+				shade: false,
+				area: ['500px', '300px'],
+				zIndex: 200000,
+				yes: function(index) {
+					//触发表单的提交事件
+					$('form.layui-form').find('button[lay-filter=formSslSet]').click();
+				},
+				btn2:function(){
+					act_confirm('确定要创建lets证书并启用？','','act=cssl&id='+id+'&domain='+domain+'&dir='+dir,'loading');
+				},
+				btn3:function(){
+						layer.close(addBoxIndex);
+						content=$("#uploadFormSet").html();
+						addBoxIndex = layer.open({
+							type: 1,
+							title: '证书上传',
+							content: content,
+							btn: ['上传', '取消'],
+							shade: false,
+							area: ['800px', '500px'],
+							zIndex: 200000,
+							yes: function(index) {
+								//触发表单的提交事件
+								$('form.layui-form').find('button[lay-filter=formSslUpdate]').click();
+							},
+							success: function(layero, index) {
+								//弹出窗口成功后渲染表单
+								var form = layui.form;
+								form.render();
+								$('form.layui-form').find('input[name=filename]').val(domain);
+								form.on('select(webs)',function(data){
+									if(data.value==0){
+										$(".inputBundle").hide();
+										$("#fileBundle").removeAttr('required').removeAttr('lay-verify');
+									}else{
+										$(".inputBundle").show();
+										$("#fileBundle").attr("required",true).attr("lay-verify","required");
+									}
+								});
+								form.on('submit(formSslUpdate)', function(data) {
+									var formData=new FormData(data.form);
+									$.ajax({
+										url:"/site/ssl?act=uploadfile",
+										type: 'POST',  
+								        data: formData,  
+								        async: false,  
+								        cache: false,  
+								        contentType: false,  
+								        processData: false, 
+										success:function(data){
+											if(data.errCode==0){
+												layer.msg(data.msg, {icon: 1, time : 1000},function(){
+													layer.closeAll();
+												});
+											}else if(data.errCode==1){
+												layer.msg(data.msg, {icon: 2, time : 1000});
+											}else{
+												layer.msg("数据错误", {icon: 2, time : 1000});
+											}
+										},
+										error:function(data){
+											layer.msg("网络错误", {icon: 2, time : 1000});
+										}
+									});
+									return false; //阻止表单提交								
+								});
+							},
+							end: function() {
+								addBoxIndex = -1;
+							}
+						});
+				},
+				success: function(layero, index) {
+					//弹出窗口成功后渲染表单
+					var form = layui.form;
+					$('form.layui-form').find('input[name=id]').val(id);
+					$('form.layui-form').find('select[name=sid]').val(val);
+					form.render();
+					form.on('submit(formSslSet)', function(data) {
+						var formData=new FormData(data.form);
+						$.ajax({
+							url:"?act=tossl",
+							type: 'post',  
+					        data: formData,  
+					        async: false,  
+					        cache: false,  
+					        contentType: false,  
+					        processData: false, 
+							success:function(data){
+								if(data.errCode==0){
+									layer.msg(data.msg, {icon: 1, time : 1000},function(){
+										window.location.reload();
+									});
+								}else if(data.errCode==1){
+									layer.msg(data.msg, {icon: 2, time : 1000});
+								}else{
+									layer.msg("数据错误", {icon: 2, time : 1000});
+								}
+							},
+							error:function(data){
+								layer.msg("网络错误", {icon: 2, time : 1000});
+							}
+						});
+						return false; //阻止表单提交								
+					});
+				},
+				end: function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+		$('.btnPhpVer').on('click', function() {
+			if(addBoxIndex !== -1) return;
+			var id=$(this).attr('data-id');
+			var val=$(this).attr('data-val');
+			content=$("#phpsFormSet").html();
+			addBoxIndex = layer.open({
+				type: 1,
+				title: 'PHP版本切换',
+				content: content,
+				btn: ['保存','PHP版本管理','取消'],
+				shade: false,
+				area: ['500px', '300px'],
+				zIndex: 200000,
+				yes: function(index) {
+					//触发表单的提交事件
+					$('form.layui-form').find('button[lay-filter=formPhpsSet]').click();
+				},
+				btn2:function(){
+					top.tab.tabAdd({
+							href : '/site/phps',
+							title : 'PHP版本管理'
+						});
+				},
+				success: function(layero, index) {
+					//弹出窗口成功后渲染表单
+					var form = layui.form;
+					form.render();
+					$('form.layui-form').find('input[name=id]').val(id);
+					$('form.layui-form').find('select[name=phps]').html($("#phps").html());
+					$('form.layui-form').find('select[name=phps]').val(val);
+					form.render();
+					form.on('submit(formPhpsSet)', function(data) {
+						var formData=new FormData(data.form);
+						$.ajax({
+							url:"?act=tophp",
+							type: 'post',  
+					        data: formData,  
+					        async: false,  
+					        cache: false,  
+					        contentType: false,  
+					        processData: false, 
+							success:function(data){
+								if(data.errCode==0){
+									layer.msg(data.msg, {icon: 1, time : 1000},function(){
+										window.location.reload();
+									});
+								}else if(data.errCode==1){
+									layer.msg(data.msg, {icon: 2, time : 1000});
+								}else{
+									layer.msg("数据错误", {icon: 2, time : 1000});
+								}
+							},
+							error:function(data){
+								layer.msg("网络错误", {icon: 2, time : 1000});
+							}
+						});
+						return false; //阻止表单提交								
+					});
+				},
+				end: function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+	});
+	
+</script>

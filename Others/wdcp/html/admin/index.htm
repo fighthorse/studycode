@@ -1,0 +1,175 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-sm6 layui-col-md3">
+            <div class="widget layui-bg-green" style="background-color: #3379b7!important">
+                <div class="layui-row">
+                    <span class="widget-title"><i class="layui-icon iconfont icon-apps"></i> 站点/FTP/数据库（个）</span>
+                    <span class="widget-content">
+						{{.sitecount}} / {{.ftpcount}} / {{.mysqlcount}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm6 layui-col-md3">
+            <div class="widget layui-bg-orange">
+                <div class="layui-row">
+                    <span class="widget-title"><i class="layui-icon iconfont icon-time"></i> 运行时间 </span>
+                    <span class="widget-content">
+	                    {{.m.run_d}} 天 {{.m.run_h}} 时 {{.m.run_m}} 分
+	                </span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm6 layui-col-md3">
+            <div class="widget layui-bg-blue">
+                <div class="layui-row">
+                    <span class="widget-title"><i class="layui-icon iconfont icon-line"></i> 系统负载 </span>
+                    <span class="widget-content">
+                    	<span id="load1">loading</span>&nbsp;<span id="load2"></span>&nbsp;<span id="load3"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm6 layui-col-md3">
+            <div class="widget layui-bg-cyan">
+                <div class="layui-row">
+                    <span class="widget-title"><i class="layui-icon iconfont icon-memory"></i> 可用内存 </span>
+                    <span class="widget-content">
+                    	<span id="memfree">loading</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field" style="border:1px solid #3379b7">
+				<legend>快捷操作</legend>
+				<div class="layui-field-box text-center">
+					<span>
+					  <a href="/site/add">创建站点</a><span> | </span>
+					  <a href="/site/phps">PHP版本</a><span> | </span>
+					  <a href="/site/rewrite">伪静态规则</a><span> | </span>
+					  <a href="/mysql/add">创建数据库</a><span> | </span>
+					  <a href="{{.phpmyadmin}}" target="_blank" data-target="notab">phpMyAdmin</a><span> | </span>
+					  <a href="/ftp/add">创建FTP</a><span> | </span>
+					  <a href="/sys/traffic">流量查看</a><span> | </span>
+					  <a href="/sys/service">启动服务</a><span> | </span>
+					  <a href="/sys/port">端口检查</a><span> | </span>
+					  <a href="/sys/process">进程管理</a><span> | </span>
+					  <a href="/safe/iptables">防火墙</a><span> | </span>
+					  <a href="/safe/ping">关ping</a><span> | </span>
+					  <a href="/safe/ssh">SSH管理</a><span> | </span>
+					  <a href="/sys/server">服务重启</a>
+					</span>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	{{if .notice}}
+	<blockquote class="layui-elem-quote">
+		{{str2html .import}}
+		<span class="text-normal">{{str2html .notice}}
+	</blockquote>
+	{{end}}
+	<div class="layui-row">
+		<div class="layui-col-md6">
+			<fieldset class="layui-elem-field">
+				<legend>系统信息</legend>
+					<table class="layui-table" lay-even="" lay-skin="nob">
+						<colgroup>
+							<col width="105">
+							<col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>系统名称：</td>
+								<td>WDlinux Control Panel (简称wdCP) <a class="text-normal" href="/about">更多</a>
+								</td>
+							</tr>
+							<tr>
+								<td>当前版本:</td>
+								<td>wdCP {{.version}} 最新 <span id="nver"></span> <button class="layui-btn layui-btn-mini btnUpdate" onclick="act_confirm('确定要更新吗?','','act=upsys')" style="display: none"><span id="ndown">立即更新</span></button> <a href="http://www.wdlinux.cn/bbs/thread-57645-1-1.html" data-target="notab" target="_blank">更新日志</a></td>
+							</tr>
+							<tr>
+								<td>操作系统：</td>
+								<td>{{.m.sysver}}</td>
+							</tr>
+							<tr>
+								<td>主 机 名：</td>
+								<td>{{.m.hostname}}</td>
+							</tr>
+							<tr>
+								<td>CPU参数：</td>
+								<td>{{.m.cpu1}}个 {{.m.cpu2}}核 {{.m.bit}}位 &nbsp;&nbsp;{{str2html .yunsuo}}</td>
+							</tr>
+							<tr>
+								<td>CPU型号：</td>
+								<td>{{.m.cpus}}</td>
+							</tr>
+							<tr>
+								<td>系统时间：</td>
+								<td>{{.m.time}}</td>
+							</tr>
+							<tr>
+								<td>服务器IP：</td>
+								<td>{{.m.srvip}}</td>
+							</tr>
+							<tr>
+								<td>内存使用：</td>
+								<td>总: <span id="memtotal"></span>&nbsp;&nbsp;&nbsp;已用: <span id="memuse">loading</span>&nbsp;&nbsp;&nbsp;剩余: <span id="memfree1">loading</span></td>
+							</tr>
+						</tbody>
+					</table>
+			</fieldset>
+			
+		</div>
+		<div class="layui-col-md6">
+			<fieldset class="layui-elem-field">
+				<legend>最新资讯</legend>
+				<iframe id="iframeSRC" src="http://www.wdlinux.cn/ainfo/wdcp3_index.html" scrolling="no" frameborder="0" height="200px" width="100%"></iframe>
+			</fieldset>
+			
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	getJSONData();
+	$.ajax({
+		url:'?act=ver',
+		type:'get', 
+		success:function(data){
+			if(data.errCode==0){
+				$("#nver").html(data.msg);
+				if(data.update==1){
+					$(".btnUpdate").show();
+					//act_confirm('有新版本('+data.msg+')可用，是否更新?','','act=upsys');
+				}
+			}else{
+				$("#nver").html(data.msg);
+			}
+		},
+		error:function(data){
+			layer.msg("网络错误", {icon: 2 , time : 1000});
+		}
+	});
+
+});
+function getJSONData()
+{
+	setTimeout("getJSONData()", 10000);
+	$.getJSON('/sys/top?act=rt&callback=', displayData);
+}
+function displayData(dataJSON)
+{
+	$("#load1").html(dataJSON.load1);
+	$("#load2").html(dataJSON.load2);
+	$("#load3").html(dataJSON.load3);
+	$("#memtotal").html(dataJSON.memtotal);
+	$("#memuse").html(dataJSON.memuse);
+	$("#memfree").html(dataJSON.memfree);
+	$("#memfree1").html(dataJSON.memfree);
+}
+</script>

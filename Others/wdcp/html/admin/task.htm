@@ -1,0 +1,111 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>计划任务</legend>
+				<div class="tools">
+					<button onclick="act_confirm('确定要更新吗？','','act=update')" class="layui-btn layui-btn-primary layui-btn-small"><i class="layui-icon iconfont icon-refresh"></i>更新计划任务</button> 
+					<a href="/set/task/?act=add" class="layui-btn layui-btn layui-btn-small"><i class="layui-icon iconfont icon-plus"></i>增加任务</a>
+					{{str2html .deftask}} 
+					<button id="btnLogs" class="layui-btn layui-btn-normal layui-btn-small"><i class="layui-icon iconfont icon-file"></i>执行记录</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center" rowspan="2">ID</th>
+								<th class="text-center" rowspan="2">任务名</th>
+								<th class="text-center" colspan="5">运行时间</th>
+								<th class="text-center" rowspan="2">状态</th>
+								<th class="text-center" rowspan="2">操作</th>
+							</tr>
+							<tr>
+								<th class="text-center">分</th>
+								<th class="text-center">时</th>
+								<th class="text-center">日</th>
+								<th class="text-center">月</th>
+								<th class="text-center">周</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{range .tasks}}
+							<tr>
+								<td class="text-center">{{.id}}</td>
+								<td class="text-center" title="{{.prog}}">{{.name}}</td>
+								<td class="text-center">{{.dmin}}</td>
+								<td class="text-center">{{.dhour}}</td>
+								<td class="text-center">{{.dday}}</td>
+								<td class="text-center">{{.dmonth}}</td>
+								<td class="text-center">{{.dweek}}</td>
+								<td class="text-center">{{if eq .status 0}}正常{{else}}关闭{{end}}</td>
+								<td class="text-center">
+								{{if eq .status 0}} 
+								<button onclick="act_confirm('确定要关闭？','','act=stop&id={{.id}}','reload')" class="layui-btn layui-btn-warm layui-btn-mini">关闭</button> 
+								{{else}} 
+								<button onclick="act_confirm('确定要打开？','','act=start&id={{.id}}','reload')" class="layui-btn layui-btn layui-btn-mini">打开</button> 
+								{{end}} 
+								<a href="/set/task/?act=edit&id={{.id}}" class="layui-btn layui-btn-normal layui-btn-mini" data-title="修改任务">修改</a> 
+								<button onclick="act_confirm('确定要删除？','','act=del&id={{.id}}','reload')" class="layui-btn layui-btn-danger layui-btn-mini"> 删除</button>
+								</td>
+							</tr>
+							{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:分钟是指任务执行的分钟数,可以是每几分钟执行一次,可以是指定多少分钟时执行一次<br/>
+						2:小时是指任务执行的小时数,一天24小时,可以每小时,也可以指定在哪个小时,也就是时间点<br/>
+						3:日是指任务执行的日期,一个月31天,可以每天执行,可指定哪些天,也就是几号<br/>
+						4:月是指任务执行的月份,一年12个月,可以每月执行,也可能指定哪些几个月<br/>
+						5:周是指一周的七天,每周是指本周里的每天,也可以指定是周几执行<br/>
+						6:执行程序是指该任务所要执行的程序,使用绝对路径<br/>
+						7:更多的时间设置可通过修改模板灵活定义<br/>
+						8:有修改或增加计划任务等操作后,需"更新计划任务"才会生效<br/>
+						9:修复系统任务是指如删除系统自带的计划任务时可在此恢复<br/>
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script>
+var addBoxIndex = -1;
+$("#btnLogs").click(function(){
+	if(addBoxIndex !== -1) return;
+	addBoxIndex = layer.open({
+		type: 2,
+		title: '执行记录',
+		content: '?act=logs',
+		btn: ['清空记录', '关闭'],
+		shade: false,
+		area: ['800px', '500px'],
+		zIndex: 200000,
+		yes: function(index) {
+			layer.confirm('确定要清空吗', { icon: 3, title: '系统提示' }, function () {
+				$.ajax({
+					url:'/set/task',
+					data:'act=logc',
+					type: 'get',  
+					success : function(data){
+						if(data.errCode == 0){
+							layer.msg(data.msg, {icon : 1 , time : 1000},function(){
+								layer.close(addBoxIndex);							
+							});
+						}else if(data.errCode == 1){
+							layer.msg(data.msg, {icon: 2 , time : 1000});
+						}else{
+							layer.msg("数据错误", {icon: 2 , time : 1000});
+						}
+					},
+					error : function(data){
+						layer.alert("网络错误",{icon:2 , title : "系统提示"});
+					}
+				});
+
+		    });
+		},
+		end: function() {
+			addBoxIndex = -1;
+		}
+	});
+});
+</script>

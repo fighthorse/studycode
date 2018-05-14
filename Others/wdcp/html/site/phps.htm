@@ -1,0 +1,143 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>PHP版本管理</legend>
+				<div class="layui-field-box">
+				<form class="layui-form">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">版本号</th>
+								<th class="text-center">安装目录</th>
+								<th class="text-center">配置文件</th>
+								<th class="text-center">运行状态</th>
+								<th class="text-center">操作</th>
+								<th class="text-center">自启动</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .list}}
+							<tr class="text-center">
+								<td>{{.ver}}</td>
+							    <td>{{.path}}</td>
+							    <td>
+							    	{{.ini}}
+								</td>
+							    {{if eq .status 0}}
+								<td class="text-default">运行中</td>
+							    <td>
+							    	{{if eq .a 0}}
+							    	<button class="layui-btn layui-btn-warm layui-btn-mini" onclick="act_confirm('确定要关闭吗？','/site/phps','ver={{.ver}}&act=stop',3000);return false">关闭</button>
+							    	<button class="layui-btn layui-btn-normal layui-btn-mini" onclick="act_confirm('确定要重启吗？','/site/phps','ver={{.ver}}&act=restart',3000);return false">重启</button>{{end}}
+							    	<button class="layui-btn layui-btn-mini editPhpIni" data-file="{{.ini}}" data-title="PHP{{.ver}}配置文件编辑" onclick="return false">编辑</button> 
+							    	<a class="layui-btn layui-btn-normal layui-btn-mini" href="/site/php?p={{.ini}}" data-title="PHP{{.ver}}设置">设置</a>
+									{{if eq .pdis true}}默认
+									{{else}}<button class="layui-btn layui-btn-primary layui-btn-mini" onclick="act_confirm('确定要设为默认PHP吗？','/site/phps','act=def&ver={{.ver}}','reload');return false">设为默认</button>
+									{{end}} 
+							    </td>
+							  	{{else if eq .status 1}}
+								<td class="text-warm">安装未运行</td>
+							    <td>
+							    	{{if eq .a 0}}
+							    	<button class="layui-btn layui-btn-mini" onclick="act_confirm('确定要启动吗？','/site/phps','ver={{.ver}}&act=start',3000);return false">启动</button>
+							    	{{end}}
+							    	<button class="layui-btn layui-btn-mini editPhpIni" data-file="{{.ini}}" data-title="PHP{{.ver}}配置文件编辑" onclick="return false">编辑</button> 
+							    	<a class="layui-btn layui-btn-normal layui-btn-mini" href="/site/php?p={{.ini}}" data-title="PHP{{.ver}}设置">设置</a>
+									{{if eq .pdis true}}默认
+									{{else}}<button class="layui-btn layui-btn-primary layui-btn-mini" onclick="act_confirm('确定要设为默认PHP吗？','/site/phps','act=def&ver={{.ver}}','reload');return false">设为默认</button>
+									{{end}} 
+							    </td>
+								{{else}}
+								<td class="text-danger">未安装</td>
+							    <td></td>
+								{{end}}
+								<td>
+									{{if eq .a 0}}
+										<input type="checkbox" lay-skin='switch' data-ver="{{.ver}}" lay-text="开启|关闭" {{if eq .start 0}}checked{{end}}>
+									{{end}}
+								</td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					</form>
+					<blockquote class="layui-elem-quote">
+						1:PHP各版本默认是没有自启动的，需要用时针对所用版本设置为自启动即可<br>
+						2:CentOS 7.X系列已不支持php 5.2/5.3的版本，如要使用5.2/5.3的老版本，可使用6.X的OS<br>
+						3:只有单N或N+A组合的WEB引擎中，才支持多PHP版本及指定PHP，单apache引擎时无效<br>
+						4:<a href="http://www.wdlinux.cn/bbs/thread-57646-1-1.html" target="_blank" class="text-normal" data-target="notab">多PHP版本共存共用的安装说明</a><br>
+						5:设默认 表示在用单N引擎时，默认使用的PHP版本，在N+A引擎时无效<br>
+						6:如设置PHP版本自启动无效时，可点击 <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="act_confirm('确定要自启动检查修复吗？','/site/phps','act=check')">自启动检查修复</button> 进行检查修复<br>
+						7:apache+php的启动|重启，直接重启WEB服务即可
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var form = layui.form;
+	var addBoxIndex = -1;
+	$(".editPhpIni").click(function(){
+		if(addBoxIndex !== -1) return;
+		var file = $(this).attr("data-file");
+		var url = "/sys/filee?act=edit&t=f&p="+file;
+		var title=$(this).attr("data-title");
+		addBoxIndex = layer.open({
+			type : 2,
+			title : title,
+			content : url,
+			shade : false,
+			area : ['800px', '500px'],
+			zIndex : 200000,
+			end : function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+	form.on('switch',function(check){
+		var msg = check.elem.checked ? "确定要开机自启吗" : "确定要关闭开机自启吗";
+		var ver = $(check.elem).attr("data-ver");
+		var act = check.elem.checked ? "ver="+ver+"&act=starts" : "ver="+ver+"&act=stops";
+		var url = window.location.href;
+		layer.open({
+			content : msg,
+			icon : 3,
+			title : '系统提示',
+			btn:['确定','取消'],
+			yes : function () {
+				$.ajax({
+					url : url,
+					data : act,
+					type : 'get',  
+					success : function(data){
+						if(data.errCode == 0){
+							layer.msg(data.msg, {icon: 1 , time : 1000});
+						}else if(data.errCode == 1){
+							layer.msg(data.msg, {icon: 2 , time : 1000});
+						}else{
+							layer.msg("数据错误", {icon: 2 , time : 1000});
+						}
+					},
+					error : function(data){
+						layer.alert("网络错误" , {icon : 2 , title : "系统提示" , time : 1000});
+						$(check.elem).prop("checked" , !check.elem.checked);
+						form.render("checkbox");
+					}
+				});
+
+		    }, btn2 : function(){
+		    	$(check.elem).prop("checked" , !check.elem.checked);
+				form.render("checkbox");
+		    }, cancel : function(){
+		    	$(check.elem).prop("checked" , !check.elem.checked);
+				form.render("checkbox");
+			}
+		});
+		return false;
+	});
+});
+</script>

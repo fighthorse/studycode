@@ -1,0 +1,116 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>MySQL设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:200px;">配置文件</label>
+							<div class="layui-input-inline">
+								<div class="layui-form-mid">{{.conf}}</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:200px;">最大连接数max_connections</label>
+							<div class="layui-input-inline">
+								<input type="text" name="max_connections" value="{{.m.max_connections}}" autocomplete="off" class="layui-input">
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:200px;">连接时间wait_timeout</label>
+							<div class="layui-input-inline">
+								<input type="text" name="wait_timeout" value="{{.m.wait_timeout}}" autocomplete="off" class="layui-input">
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:200px;">缓冲key_buffer_size</label>
+							<div class="layui-input-inline">
+								<input type="text" name="key_buffer_size" value="{{.m.key_buffer_size}}" autocomplete="off" class="layui-input">
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:200px;">查询缓存query_cache_size</label>
+							<div class="layui-input-inline">
+								<input type="text" name="query_cache_size" value="{{.m.query_cache_size}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:200px;">表缓存table_open_cache</label>
+							<div class="layui-input-inline">
+								<input type="text" name="table_open_cache" value="{{.m.table_open_cache}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:200px;">临时表大小tmp_table_size</label>
+							<div class="layui-input-inline">
+								<input type="text" name="tmp_table_size" value="{{.m.tmp_table_size}}" autocomplete="off" class="layui-input">
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formMysqlAdd">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+								<button class="layui-btn layui-btn-small layui-btn-normal" onclick="return false" id="editMyCnf" data-url="/sys/filee?p={{.conf}}&act=edit&t=f">在线编辑文件</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							修改后，需 <button class="layui-btn layui-btn-mini layui-btn-warm" onclick="act_confirm('确定要重启MySQL吗','/sys/server','act=restart&srv=mysqld');return false;">重启MySQL</button> 才会生效
+						</blockquote>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("form").submit(function(){
+		var url=location.href;
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1, time : 1000});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2, time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2, time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2, time : 1000});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+	$("#editMyCnf").click(function(){
+		if(addBoxIndex !== -1) return;
+		var url = $(this).attr("data-url");
+		addBoxIndex = layer.open({
+			type : 2,
+			title : "编辑配置文件",
+			content : url,
+			shade : false,
+			area : ['800px', '500px'],
+			zIndex : 200000,
+			end : function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+</script>

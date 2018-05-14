@@ -1,0 +1,68 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<form class="layui-form" method="post" id="formRewriteAdd">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width:60px">文件名</label>
+					<div class="layui-input-inline" style="width:650px">
+						<input type="text" name="fn" value="{{.fn}}" autocomplete="off" class="layui-input">
+						<div class="layui-form-mid layui-word-aux">以.conf结尾,且文件名中包括_apache或_nginx,如discuz_apache.conf,代表apache或nginx的文件</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width:60px">文件内容</label>
+					<div class="layui-input-inline" style="width:650px">
+						<textarea class="layui-textarea" name="contents" style="height:220px">{{.contents}}</textarea>
+					</div>
+				</div>
+				<blockquote class="layui-elem-quote">
+				可以直接将伪静态规则在此增加、修改。然后在新建站点时选择相应规则。
+				</blockquote>
+				<div class="layui-form-item text-right" >
+					<div class="layui-input-block">
+						<button class="layui-btn layui-btn-small" id="btnRewriteAdd">保存</button>
+						<button class="layui-btn layui-btn-normal layui-btn-small" type="reset">重置</button>
+						<button class="layui-btn layui-btn-primary layui-btn-small" id="btnClose">取消</button>
+					</div>
+				</div>
+			</form>			
+		</div>
+	</div>
+</div>
+<script>
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("form").submit(function(){
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:location.href,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1 , time : 1000},function(){
+						//切换到列表选项卡
+						parent.location.reload();
+					});
+				}else if(data.errCode == 1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+	$("#btnClose").click(function(){
+		parent.layer.closeAll();
+	});
+});
+</script>

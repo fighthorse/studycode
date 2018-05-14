@@ -1,0 +1,75 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>DNS设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">DNS服务器1</label>
+							<div class="layui-input-inline">
+								<input type="text" name="ns1" required lay-verify="required" value="{{.ns1}}" autocomplete="off" class="layui-input">
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">DNS服务器2</label>
+							<div class="layui-input-inline">
+								<input type="text" name="ns2" value="{{.ns2}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">搜索域</label>
+							<div class="layui-input-inline">
+								<input type="text" name="search" value="{{.search}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSysDns">提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary layui-btn-small">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							1:这里的DNS设置并不是指配置DNS，而是指服务器上所需用到的DNS。就如你本机上所用的DNS一样。<br />
+					        如:在网络是连通的，但ping不通域名时，问题就在于此。<br />
+					        2:搜索域可以为空.
+						</blockquote>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("form").submit(function(){
+		var url=location.href;
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1 , time : 1000});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+});
+</script>

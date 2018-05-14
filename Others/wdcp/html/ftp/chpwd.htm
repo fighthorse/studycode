@@ -1,0 +1,51 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md6">
+			<fieldset class="layui-elem-field">
+				<legend>修改密码</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">用户名</label>
+							<div class="layui-input-block">
+								<div class="layui-form-mid">{{.username}}</div>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">原密码</label>
+							<div class="layui-input-block">
+								<input type="password" name="password" required lay-verify="required" placeholder="请输入原密码" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">新密码</label>
+							<div class="layui-input-block">
+								<input type="password" name="password1" required lay-verify="required" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">确认密码</label>
+							<div class="layui-input-block">
+								<input type="password" name="password2" required lay-verify="required" placeholder="请确认新密码" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{{.id}}"/>
+								<button class="layui-btn" lay-submit lay-filter="formFtpChpwd">提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('form', function() {
+		var form = layui.form;
+		//监听提交
+	});
+</script>

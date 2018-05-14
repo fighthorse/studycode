@@ -1,0 +1,110 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">主域名</label>
+							<div class="layui-input-block">
+								<div class="layui-form-mid">{{.m.Domain}}</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">二级域名</label>
+							<div class="layui-input-block">
+								<input type="text" name="sdomain" required lay-verify="required" placeholder="只需填二级域名，如：test，访问地址就是http://test.{{.m.Domain}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">绑定域名</label>
+							<div class="layui-input-block">
+								<input type="text" name="domains" placeholder='多个域名用逗号","分隔' autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">默认首页</label>
+							<div class="layui-input-block">
+								<input type="text" name="dirindex" placeholder='留空为默认全局值，多个用逗号","分隔' autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">错误显示页</label>
+							<div class="layui-input-block">
+								<input name="err400" type="checkbox" lay-skin="primary" title="400" value="1" checked /> 
+						        <input name="err401" type="checkbox" lay-skin="primary" title="401" value="1" />
+						        <input name="err403" type="checkbox" lay-skin="primary" title="403" value="1" checked />
+						        <input name="err404" type="checkbox" lay-skin="primary" title="404" value="1" checked />
+						        <input name="err405" type="checkbox" lay-skin="primary" title="405" value="1" checked /> 
+						        <input name="err500" type="checkbox" lay-skin="primary" title="500" value="1" />
+						        <input name="err503" type="checkbox" lay-skin="primary" title="503" value="1" checked />
+							</div>
+							<div class="layui-form-mid layui-word-aux">错误页面文件在errpage目录下，二级域名的错误页面，需自行上传</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">目录选择</label>
+							<div class="layui-input-block">
+								<select name="dir" id="dir">
+						            {{str2html .dirlist}}
+						        </select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">自定义目录</label>
+							<div class="layui-input-block">
+								<input type="text" name="cdir" placeholder='使用绝对目录，如/www/web/default' autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="sid" value="{{.m.Id}}" />
+        						<input name="domain" type="hidden" value="{{.m.Domain}}" />
+								<button class="layui-btn" lay-submit lay-filter="formSubAdd">提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							1:如无自定义，请留空<br>
+      						2:自定义目录为首选，当输入存在的目录时，则会使用自定义目录，目录选择无效
+						</blockquote>
+					</form>
+				</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("form").submit(function(){
+		var url=location.href;
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1 , time : 1000},function(){
+						top.tab.tabAdd({
+							href : '/site/subdomain?sid={{.m.Id}}',
+							title : '二级域名'
+						});
+					});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2});
+				}else{
+					layer.msg("数据错误", {icon: 2});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+});
+</script>

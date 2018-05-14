@@ -1,0 +1,82 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>MemCached设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="/set/memcached">
+						<div class="layui-form-item">
+							<label class="layui-form-label">IP地址</label>
+							<div class="layui-input-inline">
+								<input type="text" name="ip" value="{{.ip}}" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">MemCached监听的IP地址，默认使用127.0.0.1</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">端口</label>
+							<div class="layui-input-inline">
+								<input type="text" name="port" value="{{.port}}" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">如需远程连接，在防火墙开通该端口</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">使用内存</label>
+							<div class="layui-input-inline">
+								<input type="text" name="mem" value="{{.mem}}" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">MemCached使用的内存大小，单位为M</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">连接数</label>
+							<div class="layui-input-inline">
+								<input type="text" name="con" value="{{.con}}" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">MemCached的最大连接数</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSetApi">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+					<blockquote class="layui-elem-quote">
+						修改后需重启服务才会生效，<button onclick="act_confirm('确定要重启MemCached?','/sys/service','act=restart&srv=memcached')" class="layui-btn layui-btn-normal layui-btn-mini">点击重启</button> 
+						也可以在 系统管理 &gt; <a href="/sys/service" class="text-normal">启动服务</a> 里重启服务
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('form', function() {
+		var form = layui.form;
+	});
+	$("form").submit(function(){
+		var url=$(this).attr('action');
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type:'post',
+			data:formData,
+			async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1 , time : 1000});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false;
+	});
+</script>

@@ -1,0 +1,136 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>创建数据库</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">用户名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="username" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="3-12个字符">
+							</div>
+							<div class="layui-form-mid layui-word-aux">由字母、数字、下划线组成</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="password" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="6-15个字符">
+							</div>
+							<div class="layui-form-mid layui-word-aux">由字母、数字、下划线组成</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">确认密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="cpassword" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="请再输入一次">
+							</div>
+							<div class="layui-input-inline">
+								<button type="button" class="layui-btn layui-btn-small" id="random">随机密码</button>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">数据库名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="dbname" autocomplete="off" class="layui-input" placeholder="留空为用户名+db">
+							</div>
+							<div class="layui-form-mid layui-word-aux"><span class="text-danger">不能全为数字</span></div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">数据库编码</label>
+							<div class="layui-input-inline">
+								<select name="dbcharset">
+						          	<option value="gbk">gbk</option>
+						          	<option selected value="utf8">utf8</option>
+						          	<option value="latin1">latin1</option>
+						        </select>
+							</div>
+						</div>
+						<!-- <div class="layui-form-item">
+							<label class="layui-form-label">数据库大小</label>
+							<div class="layui-input-inline">
+								<input type="text" name="dbsize" value="0" autocomplete="off" class="layui-input" placeholder="0则不限制">
+							</div>
+							<div class="layui-form-mid layui-word-aux">单位为M</div>
+						</div> -->
+						<div class="layui-form-item">
+							<label class="layui-form-label">主机名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="dbhost" value="localhost" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">可指定具体机器IP，或所有IP(%),远程访问需防火墙开放端口</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">备注</label>
+							<div class="layui-input-inline">
+								<input type="type" name="note" autocomplete="off" class="layui-input" placeholder="可选">
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formMysqlAdd">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							同时创建MySQL数据库和数据库用户 
+						</blockquote>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("#random").click(function(){
+		var text='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-'; 
+		var rand = function(min, max){return Math.floor(Math.max(min, Math.random() * (max+1)));} 
+		var password = ''; 
+		for(i=0; i<8; ++i) 
+		{ 
+			password += text.charAt(rand(0, text.length)); 
+		} 
+		$("input[name=password]").attr("type",'input').val(password);
+		$("input[name=cpassword]").attr("type",'input').val(password);
+	});
+	$("form").submit(function(){
+		var url=location.href;
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1, time : 1000},function(){
+						//获取当前选项卡ID
+						var tabid=top.tab.getCurrentTabId();
+						//切换到列表选项卡
+						top.tab.tabAdd({
+							href : '/mysql/list',
+							title : '数据库列表'
+						});
+						//关闭当前选项卡
+                		top.tab.deleteTab(tabid);
+					});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2, time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2, time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2, time : 1000});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+});
+</script>

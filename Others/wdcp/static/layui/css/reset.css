@@ -1,0 +1,532 @@
+/*表单*/
+.layui-form-label{
+	width:90px;
+	padding:5px 15px;
+}
+.layui-input-block{
+	margin-left:120px;
+}
+.layui-textarea{
+	min-height: 40px;
+}
+.layui-input{
+	height:30px;
+	line-height: 30px;
+}
+.layui-input-small{
+	height:30px;
+	line-height:30px;
+}
+.layui-form-switch{
+	margin-top: 3px;
+}
+.layui-form-onswitch{
+	border-color: #3379b7;
+    background-color: #3379b7;
+}
+.layui-form-item .layui-form-checkbox[lay-skin="primary"]{
+	margin-top: 5px;
+}
+.layui-form-checked i, .layui-form-checked:hover i{
+	color: #3379b7;
+}
+.layui-form-checked, .layui-form-checked:hover{
+	border-color: #3379b7;
+}
+.layui-form-checked[lay-skin="primary"] i{
+	border-color: #3379b7;
+    background-color: #3379b7;
+}
+.layui-form-checkbox[lay-skin="primary"]:hover i{
+	border-color: #3379b7;
+}
+.layui-form-checked[lay-skin="primary"] i{
+	border-color: #3379b7; 
+	background-color: #3379b7; 
+}
+.layui-form-select dl dt, .layui-form-select dl dd{
+	line-height: 30px;
+}
+.layui-form-mid{
+	padding:5px 0 !important;
+}
+.layui-form-item{
+	margin-bottom: 10px;
+}
+.layui-form-select dl{
+	top:34px;
+}
+.layui-btn-small i{
+	font-size:12px!important;
+}
+/*排版*/
+.text-center{
+	text-align:center!important;
+}
+.text-right{
+	text-align:right!important;
+}
+.text-left{
+	text-align:left!important;
+}
+.text-default{
+	color:#009688;
+}
+.text-primary{
+	color:#FFFFFF;
+}
+.text-warm{
+	color:#FFB800;
+}
+.text-normal{
+	color:#1E9FFF;
+}
+.text-danger{
+	color:#FF5722;
+}
+.font-bold {
+    font-weight: 600;
+}
+.layui-table[lay-size="sm"] th, .layui-table[lay-size="sm"] td{
+	font-size:14px;
+}
+.about-box p{
+	margin-bottom: 5px;
+}
+.about-box{
+	line-height: 20px
+}
+/*布局*/
+.layui-layer-tips i.layui-layer-TipsT{
+	bottom: -15px!important;
+    transform: rotate(-90deg);
+}
+.layui-layer-tips i.layui-layer-TipsR{
+	left: -15px!important;
+    transform: rotate(-90deg);
+}
+.layui-layer-tips i.layui-layer-TipsL{
+	right: -15px!important;
+    transform: rotate(90deg);
+}
+.layui-layer-tips .layui-layer-content{
+	line-height: 24px!important;
+    min-width: 12px!important;
+    padding: 0px 10px!important;
+}
+.layui-layer-tips i.layui-layer-TipsB{
+	top: -15px!important;
+    transform: rotate(90deg);
+}
+.layui-tab-item .layui-show{
+	-webkit-overflow-scrolling: touch;  
+    overflow-y: scroll; 
+}
+.layui-elem-quote{
+	border-left: 5px solid #3379b7;
+}
+.component{
+	color:rgba(255,255,255,.7);
+	line-height:60px;
+	margin-left:200px;
+}
+.layui-main{
+	left:0px;
+	width:100%;
+}
+.layui-elem-field .tools{
+	float: right;
+	padding:5px 15px;
+}
+.layui-btn+.layui-btn{
+	margin-left:0;
+}
+.layui-layout-admin .layui-body{
+	bottom: 30px;
+}
+.layui-layout-admin .layui-header {
+	height:50px;
+    background-color: #fff;
+}
+.layui-layout-admin .layui-logo {
+    color: #1f5e94;
+    font-size: 24px;
+    font-family: "Impact";
+}
+.admin-header-nav .layui-nav-item a{
+	color:#999;
+}
+.admin-header-nav .layui-nav-child{
+	top:50px;
+}
+.layui-header .welcome{
+	position: absolute;
+	right: 330px;
+	line-height: 50px;
+}
+.layui-layout-admin .layui-logo{
+	line-height:50px;
+}
+.admin-header-nav .layui-nav-item{
+	line-height:50px;
+}
+.admin-header-nav .layui-nav-bar{
+	height:3px;
+}
+.layui-nav .layui-nav-item a:hover{
+	color:#000;
+}
+.layui-nav-tree .layui-nav-item a:hover{
+	color:#fff;
+}
+.layui-nav-tree .layui-nav-child a{
+	color:#ffffff;
+	padding-left:30px;
+}
+.layui-nav-tree .layui-icon{
+	margin-right:10px;
+}
+.layui-nav-tree .layui-nav-child a:hover{
+	color:#fff;
+}
+.layui-nav-bar, .layui-nav .layui-this:after, .layui-nav-tree .layui-nav-itemed:after {
+    background-color: #393D49;
+}
+
+.site-idea {
+    margin: 50px 0;
+    font-size: 0;
+    text-align: center;
+    font-weight: 300;
+}
+.site-idea li {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 14px;
+}
+.site-idea li {
+    width: 298px;
+    height: 150px;
+    padding: 30px;
+    line-height: 24px;
+    margin-left: 30px;
+    border: 1px solid #d2d2d2;
+    text-align: left;
+}
+.site-idea .layui-field-title {
+    border-color: #d2d2d2;
+}
+.site-idea .layui-field-title legend {
+    margin: 0 20px 20px 0;
+    padding: 0 20px;
+    text-align: center;
+}
+.site-idea li:first-child {
+    margin-left: 0;
+}
+
+.admin-side-toggle {
+    position: absolute;
+    cursor: pointer;
+    z-index: 19940201;
+    left: 200px;
+    color: white;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    background-color: #3379b7;;
+    line-height: 30px;
+    top: 10px;
+}
+.widget {
+	border: 1px solid #e7eaec;
+    border-radius: 5px;
+	height:100px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.widget .widget-title{
+	border-bottom: 1px solid #e7eaec;
+    display: block;
+    font-size: 15px;
+    padding: 10px;
+    padding-left:20px;
+}
+.widget .widget-content {
+	display: block;
+	font-size:30px;
+    margin-bottom: 0;
+    white-space: nowrap;
+    line-height: 60px;
+    text-align: center;
+
+}
+.login-bg {
+	background-color: #f2f3f7;
+}
+/*.login-content{
+	width:800px;
+	position: relative;
+	margin: 0 auto;
+	height:600px;
+}*/
+.ad-box{
+	height:600px;
+}
+.login-content {
+	position: absolute;
+    width: 800px;
+    height: 280px;
+    left: 50%;
+    top: 50%;
+    margin-left: -400px;
+    margin-top: -140px;
+    background-color: #f2f3f7;
+    color: black;
+    
+}
+.login-info{
+	height:280px;
+	width:400px;
+	background: #f2f3f7;
+	float: left;
+	color: #7A787B;
+}
+.login-box {
+    width: 400px;
+    float:left;
+    color: black;
+    background: #f2f3f7
+}
+.login-box header {
+	height: 50px;
+    padding: 10px;
+}
+
+.login-box header h1 {
+	text-align: center;
+	font-size: 25px;
+	line-height: 50px;
+}
+
+.login-box .login-main {
+	padding: 10px 60px 0 60px;
+}
+
+.login-main .layui-form-item {
+	position: relative;
+}
+
+.login-main .layui-form-item .login-icon {
+	position: absolute;
+	color: #cccccc;
+	top: 10px;
+	left: 10px;
+}
+.layui-bg-black{
+	background-color: #3379b7!important;
+    color: #fff!important;
+}
+.layui-nav{
+	background-color: #3379b7;
+}
+.layui-nav-tree .layui-nav-bar{
+	background-color:#49a5de;
+}
+#admin-side .layui-nav-item a{
+	color:#fff;
+}
+#admin-side .layui-nav-item a:hover{
+	background-color: #1e5d94;
+}
+#admin-side .layui-nav-itemed{
+	background: #1e5d94;
+}
+#admin-side .layui-nav-itemed .layui-nav-child{
+	/*background:#5685bb!important；*/
+	background:rgba(240, 200, 230, 0.1) !important;
+
+}
+.layui-nav-tree .layui-this, .layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover, .layui-nav-tree .layui-nav-child dd.layui-this, .layui-nav-tree .layui-nav-child dd.layui-this a{
+	background-color:#49a5de;
+}
+
+.layui-nav-tree .layui-nav-item{
+	background-color: #3379b7;
+}
+.layui-layout-admin .layui-body{
+	top:50px;
+}
+.layui-layout-admin .layui-footer{
+	height:30px;
+	line-height: 30px;
+	color:#696969;
+}
+.login-main .layui-form-item input {
+	padding-left: 34px;
+}
+
+.login-btn{
+	width:100%;
+}
+
+.login-box footer {
+	height: 35px;
+	padding-bottom: 10px;
+}
+
+.login-box footer p {
+	line-height: 35px;
+	text-align: center;
+	color:black;
+}
+
+.login-box footer p a{
+	color:black;
+}
+
+.clear {
+	clear: both;
+}
+/*tab*/
+.admin-nav-card .layui-tab-item iframe {
+    width: 100%;
+    border: 0;
+    height: 100%;
+}
+.admin-nav-card {
+    margin-top: 3px;
+}
+.layui-nav-img{
+	margin-right: 0px;
+	width: 50px;
+	height: auto;
+	border-radius: 50%;
+}
+.layui-tab{
+	margin:0px;
+}
+.layui-tab-title{
+	background-color: #3379b7;
+}
+.admin-nav-card>.layui-tab-title .layui-this {
+    color: white;
+    background-color: #1e5d94;
+}
+.admin-nav-card>.layui-tab-title {
+    border-bottom: 1px solid #1babff;
+}
+.layui-tab-brief > .layui-tab-title .layui-this:after, .layui-tab-brief > .layui-tab-more li.layui-this:after{
+	border-bottom: 2px solid #1babff;
+}
+.admin-nav-card .layui-tab-title cite {
+    font-style: normal;
+    padding-left: 5px;
+}
+.admin-contextmenu {
+    position: absolute;
+    line-height: 36px;
+    padding: 5px 0;
+    border: 1px solid #d2d2d2;
+    background-color: white;
+    z-index: 19940201;
+    border-radius: 2px;
+    white-space: nowrap;
+    top: 30px;
+}
+.admin-contextmenu ul li {
+    padding: 0 15px;
+}
+.admin-contextmenu ul li:hover {
+	background:#d2d2d2;
+    cursor:pointer;
+}
+.ifm .layui-tab-item {
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
+}
+.layui-col-xs1, .layui-col-xs2, .layui-col-xs3, .layui-col-xs4, .layui-col-xs5, .layui-col-xs6, .layui-col-xs7, .layui-col-xs8, .layui-col-xs9, .layui-col-xs10, .layui-col-xs11, .layui-col-xs12
+,.layui-col-sm1, .layui-col-sm2, .layui-col-sm3, .layui-col-sm4, .layui-col-sm5, .layui-col-sm6, .layui-col-sm7, .layui-col-sm8, .layui-col-sm9, .layui-col-sm10, .layui-col-sm11, .layui-col-sm12
+,.layui-col-md1, .layui-col-md2, .layui-col-md3, .layui-col-md4, .layui-col-md5, .layui-col-md6, .layui-col-md7, .layui-col-md8, .layui-col-md9, .layui-col-md10, .layui-col-md11, .layui-col-md12
+,.layui-col-lg1, .layui-col-lg2, .layui-col-lg3, .layui-col-lg4, .layui-col-lg5, .layui-col-lg6, .layui-col-lg7, .layui-col-lg8, .layui-col-lg9, .layui-col-lg10, .layui-col-lg11, .layui-col-lg12
+{
+	padding:10px;
+}
+@media screen and (min-width: 750px) {
+	.layui-layout-admin .layui-side{
+		top: 50px;
+		left: 0; 
+		transition: all .3s; 
+		-webkit-transition: all .3s; 
+	}
+	.layui-layout-admin .layui-body{
+		left: 200px;
+		transition: all .3s; 
+		-webkit-transition: all .3s;
+	}
+	.layui-layout-admin .layui-footer{
+		left:200px;
+		transition: all .3s; 
+		-webkit-transition: all .3s;
+	}
+	.admin-side-toggle{
+		display:block;
+	}
+	.site-tree-mobile{
+		display:none;
+	}
+}
+@media screen and (max-width: 750px) {
+	.layui-layout-admin .layui-side{
+		top:0px;
+		z-index:10000;
+		left: -260px; 
+		transition: all .3s; 
+		-webkit-transition: all .3s; 
+	}
+	.layui-layout-admin .layui-body{
+		left: 0;
+		transition: all .3s; 
+		-webkit-transition: all .3s;
+	}
+	.layui-layout-admin .layui-footer{
+		left:0;
+		transition: all .3s; 
+		-webkit-transition: all .3s;
+	}
+	.admin-side-toggle{
+		display:none;
+	}
+	.site-tree-mobile {
+		display:block;
+	    position: fixed;
+	    z-index: 9999;
+	    bottom: 65px;
+	    left: 15px;
+	    width: 50px;
+	    height: 50px;
+	    line-height: 50px;
+	    border-radius: 2px;
+	    text-align: center;
+	    background-color: rgba(0,0,0,.7);
+	    color: #fff;
+		opacity:1;
+		transition: all .3s; 
+		-webkit-transition: all .3s;
+	}
+	.site-mobile .layui-side{
+		top:0;
+		left:0;
+		z-index:10000;
+	}
+	.site-mobile .site-mobile-shade {
+	    content: '';
+	    position: fixed;
+	    top: 0;
+	    bottom: 0;
+	    left: 0;
+	    right: 0;
+	    background-color: rgba(0,0,0,.8);
+	    z-index: 9999;
+	}
+}

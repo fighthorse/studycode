@@ -1,0 +1,313 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md6">
+			<fieldset class="layui-elem-field" style="border:1px solid #3379b7">
+				<legend>登录安全设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" action="?act=sys" method="post">
+						<!-- <div class="layui-form-item">
+							<label class="layui-form-label">登录超时</label>
+							<div class="layui-input-inline">
+								<input type="text" name="cootime" value="{{.m.cootime}}" required lay-verify="number" placeholder="1800" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">单位为秒，超时需重新登录</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">模板目录</label>
+							<div class="layui-input-inline">
+								<input type="text" name="tpldir" value="{{.m.tpldir}}" required lay-verify="required" placeholder="html" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">默认html</div>
+						</div> -->
+						<div class="layui-form-item">
+							<label class="layui-form-label">登录限制</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="loglock" lay-skin="switch" lay-text="打开|关闭" value="1" {{if eq .m.loglock true}} checked {{end}}>
+							</div>
+							<div class="layui-form-mid layui-word-aux">密码错误三次将锁定半小时</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">授权IP</label>
+							<div class="layui-input-block">
+								<input type="text" name="adminip" value="{{.m.adminip}}" autocomplete="off" class="layui-input" placeholder="默认不限制">
+								<div class="layui-form-mid layui-word-aux">设置后只可使用该IP访问后台。多个用“,”隔开，支持IP段，如192.168.X.X</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">授权域名</label>
+							<div class="layui-input-block">
+								<input type="text" name="adminurl" value="{{.m.adminurl}}" autocomplete="off" class="layui-input" placeholder="默认不限制">
+								<div class="layui-form-mid layui-word-aux">设置后只可使用该域名访问后台。多个用“,”隔开</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSetSys">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote"><span class="text-danger">后台访问域名和IP的设置，是指只允许这些IP或域名访问后台，设置好后务必记住此IP或域名，否则打不开后台</span>，点击参考<a href="http://www.wdlinux.cn/bbs/viewthread.php?tid=3065&page=1&extra=#pid11233" target="_blank" class="text-normal" data-target="notab">设置方法</a></blockquote>
+					</form>
+				</div>
+			</fieldset>
+			
+			<fieldset class="layui-elem-field" style="border:1px solid #3379b7">
+				<legend>访问端口设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" action="?act=wdcpport" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">修改端口</label>
+							<div class="layui-input-block">
+								<input type="text" name="nport" value="{{.m.wdcpport}}" autocomplete="off" class="layui-input" placeholder="8080">
+								<div class="layui-form-mid layui-word-aux">不能使用80端口,建议端口范围8000-9999。修改前，请确保防火墙里开放了相应端口</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSetWdcpport">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							1 点击确定后，会提示“网络错误”，请使用新修改的端口打开即可<br/>
+							2 修改前，请确保防火墙里开放了相应端口，否则将会<span class="text-danger">无法连接</span>
+						</blockquote>
+					</form>
+				</div>
+			</fieldset>
+			<fieldset class="layui-elem-field" style="border:1px solid #3379b7">
+				<legend>FTP端口设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" action="?act=ftpport" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">修改端口</label>
+							<div class="layui-input-block">
+								<input type="text" name="nport" value="{{.m.ftpport}}" autocomplete="off" class="layui-input" placeholder="21">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSetFtpport">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							请确保防火墙里开放了相应端口，否则将会<span class="text-danger">无法连接</span>
+						</blockquote>
+					</form>
+				</div>
+			</fieldset>
+			<fieldset class="layui-elem-field" style="border:1px solid #3379b7">
+				<legend>API设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" action="?act=api" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">访问IP</label>
+							<div class=layui-input-block>
+								<input type="text" name="apiips" value="{{.m.apiips}}" autocomplete="off" class="layui-input">
+								<div class="layui-form-mid layui-word-aux">多个IP用“,”分隔，如不限制IP，用0.0.0.0，不用请留空</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">API密钥</label>
+							<div class="layui-input-block">
+								<input type="text" name="apikey" value="{{.m.apikey}}" autocomplete="off" class="layui-input">
+								<div class="layui-form-mid layui-word-aux">通过密钥登录API，只支持字母、数字、下划线等，不用请留空</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSetApi">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+		<div class="layui-col-md6">
+			<fieldset class="layui-elem-field" style="border:1px solid #3379b7">
+				<legend>WEB设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" action="?act=web" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">web根目录</label>
+							<div class="layui-input-block">
+								<input type="text" name="webhome" value="{{.m.webhome}}" required lay-verify="required" placeholder="/www/web" autocomplete="off" class="layui-input">
+								<div class="layui-form-mid layui-word-aux">创建网站和FTP时默认的根目录</div>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">备份目录</label>
+							<div class="layui-input-block">
+								<input type="text" name="backuphome" value="{{.m.backuphome}}" required lay-verify="required" placeholder="/www/backup" autocomplete="off" class="layui-input">
+								<div class="layui-form-mid layui-word-aux">备份数据时默认的根目录</div>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">回收站目录</label>
+							<div class="layui-input-block">
+								<input type="text" name="trashhome" value="{{.m.trashhome}}" placeholder="/www/trash" autocomplete="off" class="layui-input">
+								<div class="layui-form-mid layui-word-aux">后台删除文件的临时存放目录</div>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label ">phpMyAdmin</label>
+							<div class="layui-input-block">
+								<input type="text" name="phpmyadmin" value="{{.m.phpmyadmin}}" required lay-verify="required" placeholder="html" autocomplete="off" class="layui-input">
+								<div class="layui-form-mid layui-word-aux">
+								phpMyAdmin目录，<a href="http://www.wdlinux.cn/bbs/thread-52685-1-1.html" target="_blank" class="text-normal" data-target="notab">设置方法</a>
+							</div>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">web端口</label>
+							<div class="layui-input-block">
+								<input type="text" name="webports" value="{{.m.webports}}" placeholder="80" autocomplete="off" class="layui-input">
+								<div class="layui-form-mid layui-word-aux"> 
+									多个端口用“,”分隔，80端口不可删除。增加端口后，要在<a href="/safe/iptables" class="text-normal">防火墙</a>里开通
+								</div>
+							</div>
+
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">删除站点目录</label>
+							<div class="layui-input-inline" style="width: 60px;">
+								<input type="checkbox" name="sitedirdelis" value="1" {{if eq .m.sitedirdelis true}} checked {{end}} lay-skin="switch" lay-text="打开|关闭">
+							</div>
+							<div class="layui-form-mid layui-word-aux">删除站点时是否删除目录和数据</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">删除FTP目录</label>
+							<div class="layui-input-inline" style="width: 60px;">
+								<input type="checkbox" name="ftpdirdelis" value="1" {{if eq .m.ftpdirdelis true}} checked {{end}} lay-skin="switch" lay-text="打开|关闭">
+							</div>
+							<div class="layui-form-mid layui-word-aux">删除FTP用户时是否删除目录及数据</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">开启回收站</label>
+							<div class="layui-input-inline" style="width: 60px;">
+								<input type="checkbox" name="trashis" value="1" {{if eq .m.trashis true}} checked {{end}} lay-skin="switch" lay-text="打开|关闭">
+							</div>
+							<div class="layui-form-mid layui-word-aux">将后台删除的文件或目录放入回收站</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSetWeb">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+			<fieldset class="layui-elem-field" style="border:1px solid #3379b7">
+				<legend>引擎设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" action="?act=webeng" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">当前引擎</label>
+							<div class="layui-input-block">
+								<select name="web_eng" id="web_eng" class="form-control">
+									<option value="1" {{if eq .m.webeng 1}}selected{{end}}>apache</option>
+									<option value="2" {{if eq .m.webeng 2}}selected{{end}}>nginx</option>
+									<option value="3" {{if eq .m.webeng 3}}selected{{end}}>nginx+apache</option>
+								</select>
+								<div class="layui-form-mid layui-word-aux">不能使用80端口,建议端口范围8000-9999</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSetWebeng">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							1:apache&nbsp;&nbsp;&nbsp;&nbsp;表示apache+php+mysql<br>
+					      	2:nginx &nbsp;&nbsp;&nbsp;&nbsp;表示nginx+php+mysql<br>
+					      	3:nginx+apache 表示nginx+apache+php+mysql的组合<br>
+						  	4:3.2起，切换单N引擎，需要在PHP版本管理里设置默认PHP,否则PHP页面将会502错误
+						</blockquote>
+					</form>
+				</div>
+			</fieldset>
+			<fieldset class="layui-elem-field" style="border:1px solid #3379b7">
+				<legend>日志设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" action="?act=weblog" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">日志目录</label>
+							<div class="layui-input-block">
+								<input type="text" name="weblogsdir" value="{{.m.weblogsdir}}" autocomplete="off" class="layui-input" placeholder="/www/weblogs">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">切割日志</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="weblogsrotate" value="1" {{if eq .m.weblogsrotate true}} checked {{end}} lay-skin="switch" lay-text="打开|关闭">
+							</div>
+							<div class="layui-form-mid layui-word-aux">每天生成一个文件</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">压缩日志</label>
+							<div class="layui-input-inline" style="width:60px">
+								<input type="checkbox" name="weblogsgz" lay-skin="switch" lay-text="打开|关闭" value="1" {{if eq .m.weblogsgz true}} checked{{end}}>
+							</div>
+							<div class="layui-form-mid layui-word-aux">压缩成gz文件</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">保留天数</label>
+							<div class="layui-input-block">
+								<input type="text" name="weblogsday" value="{{.m.weblogsday}}" autocomplete="off" class="layui-input" placeholder="0">
+								<div class="layui-form-mid layui-word-aux">如不启用或取消，设置为0</div>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formWeblog">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+								&nbsp;&nbsp;{{str2html .wlstitle}}
+								&nbsp;&nbsp;<a href="http://www.wdlinux.cn/bbs/thread-3018-1-1.html" target="_blank" class="text-normal" data-target="notab">什么是默认的web访问日志?</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('form', function() {
+		var form = layui.form;
+	});
+	$("form").submit(function(){
+		var url=$(this).attr('action');
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type:'post',
+			data:formData,
+			async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1 , time : 1000});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false;
+	});
+</script>

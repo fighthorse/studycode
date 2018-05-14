@@ -1,0 +1,40 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>进程管理</legend>
+				<div class="tools">
+					共 {{.c}} 个进程
+					<button class="layui-btn layui-btn-small" type="button" id="reload" onclick="location.reload()"><i class="layui-icon iconfont icon-refresh"></i>刷新</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+						<tr>
+						    <th class="text-center">PID</th>
+						    <th class="text-center">用户</th>
+						    <th class="text-center">程序</th>
+						    <th class="text-center">操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						{{range .pros}}
+						<tr class="text-center">
+						    <td>{{.pid}}</td>
+						    <td>{{.user}}</td>
+						    <td>{{.prog}}</td>
+						    <td><button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定要终止进程吗','','act=kill&pid={{.pid}}','reload')">终止</button></td>
+						</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:列表为当前系统所有运行中的进程或程序<br />
+					    2:可用于检查系统是否有运行一些异常或其它的进程<br />
+					    3:如有异常进程或要终止某进程，点击 右边 的终止即可
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

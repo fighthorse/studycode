@@ -1,0 +1,62 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>系统日志</legend>
+				<div class="tools">
+					共 {{.num}} 个文件
+					<button class="layui-btn layui-btn-warm layui-btn-small" onclick="act_confirm('确定要清除空文件吗？','','act=del&f=0','reload');"><i class="layui-icon iconfont icon-delete"></i>清除空文件（即大小为0的文件）</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+						<tr>
+						    <th class="text-center">文件名</th>
+						    <th class="text-center">大小</th>
+						    <th class="text-center">最后更新</th>
+						    <th class="text-center">操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						{{range .files}}
+						<tr class="text-center">
+						    <td>{{.filename}}</td>
+						    <td>{{.size}}</td>
+						    <td>{{.mtime}}</td>
+						    <td>
+								<button class="layui-btn layui-btn-normal layui-btn-mini btnSyslogView" data-file="{{.filename}}">查看</button> 
+								<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定要删除吗？','','act=del&f={{.filename}}','reload');">删除</button>
+						    </td>
+						</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+					通常以“.数字”结尾的文件都可直接删除，不会有影响
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('form', function() {
+		var addBoxIndex = -1;
+		$(".btnSyslogView").click(function(){
+			if(addBoxIndex !== -1) return;
+			var file = $(this).attr("data-file");
+			var url = "?act=view&f="+file;
+			addBoxIndex = layer.open({
+				type : 2,
+				title : "查看日志",
+				content : url,
+				shade : false,
+				area : ['800px', '600px'],
+				zIndex : 200000,
+				end : function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+	});
+</script>

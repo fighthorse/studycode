@@ -1,0 +1,39 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>单IP连接数</legend>
+				<div class="tools">
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=all_c">总连接数</a>
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=ip_c">单IP连接数</a>
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=state_c">连接状态</a>
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=web_c">WEB连接数</a>
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=mysql_c">MySQL连接数</a>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+						<tr>
+						    <th class="text-center">IP地址</th>
+						    <th class="text-center">连接数</th>
+						    <th class="text-center">操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						{{range .ips}}
+						<tr class="text-center">
+						    <td>{{.ip}}</td>
+						    <td>{{.count}}</td>
+						    <td><a href="?act=drop&ip={{.ip}}" class="layui-btn layui-btn-danger layui-btn-mini">拒绝连接</a></td>
+						</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						&quot;拒绝连接&quot; 此操作是将IP禁止连接服务器。该操作要注意是否为自己的IP，否则将无法再打开网站以及远程连接和管理。如不小将自己拒绝，重启服务器可恢复!<
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

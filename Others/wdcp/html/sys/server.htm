@@ -1,0 +1,17 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>服务重启</legend>
+				<div class="layui-field-box">
+					<button class="layui-btn layui-btn-large" onclick="act_confirm('确定要重启WDCP？','','act=restart&srv=wdcp')">重启WDCP</button>
+					<button class="layui-btn layui-btn-large" onclick="act_confirm('确定要重启WEB？','','act=restart&srv=web')">重启WEB</button>
+					<button class="layui-btn layui-btn-large" onclick="act_confirm('确定要重启MySQL？','','act=restart&srv=mysqld')">重启MySQL</button>
+					<button class="layui-btn layui-btn-large" onclick="act_confirm('确定要重启PureFtpd？','','act=restart&srv=pureftpd')">重启PureFtpd</button>
+					<button class="layui-btn layui-btn-large" onclick="act_confirm('确定要重启SSH？','','act=restart&srv=sshd')">重启SSH</button>
+					<button class="layui-btn layui-btn-large" onclick="act_confirm('确定要重启服务器？','','act=reboot')">重启服务器</button>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,52 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>服务管理</legend>
+				<div class="tools">
+					<a class="layui-btn layui-btn-small" href="/sys/service?view=run" data-target="notab">当前运行及开机自启</a>
+					<a class="layui-btn layui-btn-small" href="/sys/service?view=all" data-target="notab">所有服务</a>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+						<tr>
+						    <th class="text-center">ID</th>
+						    <th class="text-center">程序</th>
+						    <th class="text-center">状态</th>
+						    <th class="text-center">开机启动</th>
+						    <th class="text-center">操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						{{range .srvs}}
+						<tr class="text-center">
+						    <td>{{.id}}</td>
+						    <td>{{.prog}}</td>
+						    <td>{{.state}}</td>
+						    <td>{{.st}}</td>
+						    <td>
+						    	{{if eq .sts "yes"}}
+								<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定要关闭服务吗','','act=stop&srv={{.prog}}','reload')">关闭</button>
+								<button class="layui-btn layui-btn-warm layui-btn-mini" onclick="act_confirm('确定要禁止开机自启吗','','act=stop&s=y&srv={{.prog}}','reload')">禁止自启</button>
+								<button class="layui-btn layui-btn-normal layui-btn-mini" onclick="act_confirm('确定要重启服务吗','','act=restart&srv={{.prog}}','reload')">重启</button>
+								{{else}}
+								<button class="layui-btn layui-btn-mini" onclick="act_confirm('确定要启动服务吗','','act=start&srv={{.prog}}','reload')">启动</button>
+								<button class="layui-btn layui-btn-normal layui-btn-mini" onclick="act_confirm('确定要开机自启吗','','act=start&s=y&srv={{.prog}}','reload')">开机自启</button>
+								{{end}}
+						    </td>
+						</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:启动表示启动当前服务 <br>
+					    2:开机自启表示设置为随系统启动,机器重启后会自动启动<br>
+					    3:关闭表示停止服务<br>
+					    4:禁止开机自启表示关闭随系统启动，机器重启后不会启动
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

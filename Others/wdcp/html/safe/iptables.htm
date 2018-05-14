@@ -1,0 +1,266 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>防火墙规则</legend>
+				<div class="tools">
+					<button class="layui-btn layui-btn-small" id="btnFastAdd"><i class="layui-icon iconfont icon-plus"></i>快速添加</button>
+					<button class="layui-btn layui-btn-primary layui-btn-small" id="btnAdd"><i class="layui-icon iconfont icon-plus"></i>高级添加</button>
+					<button class="layui-btn layui-btn-normal layui-btn-small" id="btnAdd" onclick="act_confirm('确定保存？','','act=save')"><i class="layui-icon iconfont icon-refresh"></i>保存</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table">
+						<thead>
+							<tr>
+								<th class="text-center">ID</th>
+								<th class="text-center">协议</th>
+								<th class="text-center">源IP</th>
+								<th class="text-center">源端口</th>
+								<th class="text-center">目标IP</th>
+								<th class="text-center">目标端口</th>
+								<th class="text-center">动作</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .ips}} 
+							<tr class="text-center">
+								<td>{{.id}}</td>
+							    <td>{{.pro}}</td>
+							    <td>{{.sip}}</td>
+							    <td>{{.sport}}</td>
+							    <td>{{.dip}}</td>
+							    <td>{{.dport}}</td>
+							    <td>{{.act}}</td>
+							    <td><button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定要删除吗','','act=del&str={{.link}}','reload')">删除</button></td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						所有增加，删除等操作，重启后会失效。如需重启后生效，操作完后，点击"保存"
+					</blockquote>
+				</div>
+			</fieldset>
+			<!--高级添加模板 start-->
+			<script type="text/template" id="addFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" id="addForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label">协议</label>
+							<div class="layui-input-block">
+								<select name="pro" id="pro">
+          							<option value="tcp">tcp</option>
+          							<option value="udp">udp</option>
+       				 			</select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">源IP</label>
+							<div class="layui-input-block">
+								<input type="text" name="sip" autocomplete="off" class="layui-input" placeholder="可选">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">源端口</label>
+							<div class="layui-input-block">
+								<input type="text" name="sport" autocomplete="off" class="layui-input" placeholder="可选">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">目标IP</label>
+							<div class="layui-input-block">
+								<input type="text" name="dip" autocomplete="off" class="layui-input" placeholder="可选">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">目标端口</label>
+							<div class="layui-input-block">
+								<input type="text" name="dport" autocomplete="off" class="layui-input" placeholder="开放或限制的端口">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">操作</label>
+							<div class="layui-input-block">
+								<select name="act">
+          							<option value="ACCEPT">通过</option>
+          							<option value="DROP">拒绝</option>
+    							</select>
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formIptablesAdd">提交</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							1:空为默认，则不限。<br />
+							2:源IP、源端口一般是指远程IP和端口，目标IP和端口一般是指本机（服务器）的IP和端口。<br />
+							3:IP地址支持IP段，如192.168.1.0/24，192.168.1.0/16。<br />
+							4:更改过规则后，如需下次重启生效，请保存。否则重启后无效。<br />
+							<br />
+							例子说明:<br />
+							1:比如开通80端口,在目标端口上填80，确定即可。<br />
+							2:限制FTP只有192.168.1.200这个IP可访问。 <br />
+							在源IP上填192.168.1.200，目标端口上填21，确定即可。<br />
+							3:如果限制192.168.1.200 IP的访问。<br />
+							在源IP上填192.168.1.200，&quot;操作&quot;选拒绝,确定即可。<br />
+							4:如限制只有192.168.1.200这个IP可以访问3306端口<br />
+							在源IP上填 192.168.1.200，目标端口上填3306，确定即可。
+						</blockquote>
+					</form>
+				</div>
+			</script>
+			<!--快速添加模板 start-->
+			<script type="text/template" id="fastaddFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" id="fastaddForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">协议</label>
+							<div class="layui-input-inline">
+								<select name="pro" id="pro">
+          							<option value="tcp">tcp</option>
+          							<option value="udp">udp</option>
+       				 			</select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">目标端口</label>
+							<div class="layui-input-inline">
+								<input type="text" name="dport" autocomplete="off" class="layui-input" placeholder="开放的端口">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">操作</label>
+							<div class="layui-input-inline">
+								<select name="act">
+          							<option value="ACCEPT">通过</option>
+          							<option value="DROP">拒绝</option>
+    							</select>
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formIptablesFastAdd">提交</button>
+							</div>
+						</div>
+						
+						<blockquote class="layui-elem-quote">
+							目标端口即是开通访问或禁止访问的端口
+						</blockquote>
+					</form>
+				</div>
+			</script>
+		</div>
+	</div>
+</div>
+<script>
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$('#btnAdd').on('click', function() {
+		if(addBoxIndex !== -1) return;
+		content=$("#addFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '高级添加规则',
+			content: content,
+			btn: ['保存', '取消'],
+			shade: false,
+			area: ['700px', '500px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formIptablesAdd]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				form.on('submit(formIptablesAdd)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"/safe/iptables",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1, time : 1000},function(){
+									window.location.reload();
+								});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2, time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2, time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2, time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+	$('#btnFastAdd').on('click', function() {
+		if(addBoxIndex !== -1) return;
+		content=$("#fastaddFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '快速添加规则',
+			content: content,
+			btn: ['保存', '取消'],
+			shade: false,
+			area: ['400px', '310px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formIptablesFastAdd]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				form.on('submit(formIptablesFastAdd)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"/safe/iptables",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1, time : 1000},function(){
+									window.location.reload();
+								});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2, time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2, time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2, time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+</script>

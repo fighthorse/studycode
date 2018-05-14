@@ -1,0 +1,26 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>总连接数</legend>
+				<div class="tools">
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=all_c">总连接数</a>
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=ip_c">单IP连接数</a>
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=state_c">连接状态</a>
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=web_c">WEB连接数</a>
+					<a class="layui-btn layui-btn-small" data-target="notab" href="?act=mysql_c">MySQL连接数</a>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<tbody>
+						<tr class="text-center">
+						    <td>总连接数</td>
+						    <td>{{.all}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

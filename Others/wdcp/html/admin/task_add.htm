@@ -1,0 +1,249 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>增加任务</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" action="?act=adds" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">任务名称</label>
+							<div class="layui-input-inline">
+								<input type="text" name="name" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="输入计划任务名称">
+							</div>
+						</div>
+						<hr/>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:60px">分</label>
+								<div class="layui-input-inline">
+									<select name="min" id="min" class="form-control">
+	                                	<option value="1" selected>每1分钟</option>
+	                                    <option value="5">每5分钟</option>
+	                                    <option value="10">每10分钟</option>
+	                                    <option value="15">每15分钟</option>
+	                                    <option value="30">每30分钟</option>
+	                                </select>
+								</div>
+							</div>
+							<div class="layui-inline" style="width:680px">
+								<label class="layui-form-label" style="width:30px">指定</label>
+								<div class="layui-input-inline" style="width:545px">
+									<input name="mins" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;5分" value="5" checked>
+                                    <input name="mins" type="checkbox" lay-skin="primary" title="10分" value="10">
+                                    <input name="mins" type="checkbox" lay-skin="primary" title="15分" value="15">
+                                    <input name="mins" type="checkbox" lay-skin="primary" title="20分" value="20">
+                                    <input name="mins" type="checkbox" lay-skin="primary" title="30分" value="30">
+                                    <input name="mins" type="checkbox" lay-skin="primary" title="40分" value="40">
+                                    <input name="mins" type="checkbox" lay-skin="primary" title="50分" value="50">
+								</div>
+							</div>
+						</div>
+						<hr/>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:60px">时</label>
+								<div class="layui-input-inline">
+									<select name="hour" id="hour" class="form-control">
+	                                    <option value="1" selected>每小时</option>
+	                                    <option value="3">每三小时</option>
+	                                    <option value="5">每五小时</option>
+	                                </select>
+								</div>
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:30px">指定</label>
+								<div class="layui-input-inline" style="width:525px">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;0" value="0">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;1" value="1" checked>
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;2" value="2">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;3" value="3">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;4" value="4">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;5" value="5">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;6" value="6">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;7" value="7">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;8" value="8">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="&nbsp;&nbsp;9" value="9">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="10" value="10">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="11" value="11">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="12" value="12">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="13" value="13">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="14" value="14">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="15" value="15">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="16" value="16">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="17" value="17">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="18" value="18">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="19" value="19">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="20" value="20">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="21" value="21">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="22" value="22">
+                                    <input name="hours" type="checkbox"  lay-skin="primary" title="23" value="23">
+								</div>
+							</div>
+						</div>
+						<hr/>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:60px">日</label>
+								<div class="layui-input-inline" style="width:60px">
+									<input name="day" type="checkbox" lay-skin="switch" value="1" checked lay-text="打开|关闭">
+								</div>
+								<div class="layui-form-mid layui-word-aux">每天</div>
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:30px">指定</label>
+								<div class="layui-input-inline" style="width:525px">
+				                     <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;1" value="1">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;2" value="2">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;3" value="3">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;4" value="4">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;5" value="5">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;6" value="6">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;7" value="7">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;8" value="8">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;9" value="9">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="10" value="10">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="11" value="11">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="12" value="12">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="13" value="13">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="14" value="14">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="15" value="15">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="16" value="16">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="17" value="17">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="18" value="18">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="19" value="19">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="20" value="20">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="21" value="21">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="22" value="22">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="23" value="23">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="24" value="24">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="25" value="25">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="26" value="26">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="27" value="27">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="28" value="28">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="29" value="29">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="30" value="30">
+					                 <input name="days" type="checkbox" lay-skin="primary" title="31" value="31">
+								</div>
+							</div>
+						</div>
+						<hr/>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:60px">周</label>
+								<div class="layui-input-inline" style="width:60px">
+									<input name="week" type="checkbox" lay-skin="switch" value="1" checked lay-text="打开|关闭">
+								</div>
+								<div class="layui-form-mid layui-word-aux">每周</div>
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:30px">指定</label>
+								<div class="layui-input-inline" style="width:525px">
+				                     <input name="weeks" type="checkbox" lay-skin="primary" title="周一" value="1">
+					                 <input name="weeks" type="checkbox" lay-skin="primary" title="周二" value="2">
+					                 <input name="weeks" type="checkbox" lay-skin="primary" title="周三" value="3">
+					                 <input name="weeks" type="checkbox" lay-skin="primary" title="周四" value="4">
+					                 <input name="weeks" type="checkbox" lay-skin="primary" title="周五" value="5">
+					                 <input name="weeks" type="checkbox" lay-skin="primary" title="周六" value="6">
+					                 <input name="weeks" type="checkbox" lay-skin="primary" title="周日" value="0">
+								</div>
+							</div>
+						</div>
+						<hr/>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:60px">月</label>
+								<div class="layui-input-inline" style="width:60px">
+									<input name="month" type="checkbox" lay-skin="switch" value="1" checked lay-text="打开|关闭">
+								</div>
+								<div class="layui-form-mid layui-word-aux">每月</div>
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:30px">指定</label>
+								<div class="layui-input-inline" style="width:525px">
+				                     <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;1月" value="1">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;2月" value="2">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;3月" value="3">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;4月" value="4">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;5月" value="5">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;6月" value="6"><br/>
+					                 <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;7月" value="7">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;8月" value="8">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="&nbsp;&nbsp;9月" value="9">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="10月" value="10">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="11月" value="11">
+					                 <input name="months" type="checkbox" lay-skin="primary" title="12月" value="12">
+								</div>
+							</div>
+						</div>
+						<hr/>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">程序路径</label>
+							<div class="layui-input-inline">
+								<input type="text" name="prog" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="输入待执行程序的完整路径">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formSys">提交</button>
+								<button type="reset" class="layui-btn layui-btn-small layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							1:分钟是指任务执行的分钟时间,可以是每隔几分钟执行一次,可以是指定多少分钟时执行一次<br>
+						    2:小时是指任务执行的小时数,可以每小时执行,也可以指定在哪个小时内执行,也就是时间点.<br>
+						    3:日是指任务执行的日期,一个月31天,可以每天执行,可指定哪些天,也就是几号<br>
+						    4:月是指任务执行的月份,一年12个月,可以每月执行,也可能指定哪些几个月<br>
+						    5:周是指一周的七天,每周是指本周里的每天,也可以指定是周几执行<br>
+						    6:执行程序是指该任务所要执行的程序,使用绝对路径<br>
+						    7:执行时间有指定后,相应前面的选择则无效<br>
+						    8:更多的时间设置可通过修改模板灵活定义
+						</blockquote>
+					</form>
+					
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('form', function() {
+		var form = layui.form;
+	});
+	$("form").submit(function(){
+		var url=$(this).attr('action');
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type:'post',
+			data:formData,
+			async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1 , time : 1000},function(){
+						//获取当前选项卡ID
+						var tabid=top.tab.getCurrentTabId();
+						//切换到列表选项卡
+						top.tab.tabAdd({
+							href : '/set/task',
+							title : '计划任务'
+						});
+						//关闭当前选项卡
+                		top.tab.deleteTab(tabid);
+
+					});
+				}else if(data.errCode == 1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false;
+	});
+</script>

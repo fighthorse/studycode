@@ -1,0 +1,64 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>Rewrite规则管理</legend>
+				<div class="tools">
+					<button class="layui-btn layui-btn-normal layui-btn-small btnRewrite" data-filename="add"><i class="layui-icon iconfont icon-plus"></i>增加规则</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">文件名</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .files}}
+							<tr class="text-center">
+							    <td>{{.filename}}</td>
+							    <td>
+							    	<button class="layui-btn layui-btn-primary layui-btn-mini btnRewrite" data-filename="{{.filename}}">修改</button> 
+							    	<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确实要删除？','','act=del&f={{.filename}}','reload');">删除</button>
+							    </td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						伪静态规则可以在此处添加，也可以使用.htaccess文件格式，上传到网站根目录(public_html)下
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script>
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$(".btnRewrite").click(function(){
+		if(addBoxIndex !== -1) return;
+		var filename = $(this).attr("data-filename");
+		if(filename == "add"){
+			var url = "?act=add";
+			var title = "增加规则";
+		}else{
+			var url = "?act=edit&f="+filename;
+			var title = "编辑规则";
+		}
+		addBoxIndex = layer.open({
+			type : 2,
+			title : title,
+			content : url,
+			shade : false,
+			area : ['800px', '500px'],
+			zIndex : 200000,
+			end : function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+</script>

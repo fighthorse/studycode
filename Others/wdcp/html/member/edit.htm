@@ -1,0 +1,74 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">用户名</label>
+							<div class="layui-input-block" style="margin-left:90px;width:450px">
+								<input type="text" name="username" value="{{.m.Username}}" required lay-verify="required" placeholder="3-12个字符，由字母、数字、下划线组成" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">电话</label>
+							<div class="layui-input-block" style="margin-left:90px;width:450px">
+								<input type="text" name="phone" value="{{.m.Phone}}" placeholder="可选" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">QQ</label>
+							<div class="layui-input-block" style="margin-left:90px;width:450px">
+								<input type="text" name="qq" value="{{.m.Qq}}" placeholder="可选" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:60px">邮箱</label>
+							<div class="layui-input-block" style="margin-left:90px;width:450px">
+								<input type="text" name="email" value="{{.m.Email}}" placeholder="可选" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="text-right">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formMemberEdit">提交</button>
+								<button type="reset" class="layui-btn layui-btn-normal layui-btn-primary layui-btn-small">重置</button>
+								<button class="layui-btn layui-btn-primary layui-btn-small" lay-submit id="btnClose">取消</button>
+							</div>
+						</div>
+					</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("form").submit(function(){
+		var url=location.href;
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1 , time : 1000});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2 , time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2 , time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2 , time : 1000});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+	$("#btnClose").click(function(){
+		parent.layer.closeAll();
+	});
+});
+</script>

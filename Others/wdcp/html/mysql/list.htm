@@ -1,0 +1,264 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>数据库列表</legend>
+				<div class="tools">
+					<form class="layui-form" method="get">
+						<div class="layui-form-item">
+							<div class="layui-input-inline" style="width: 80px;">
+								<a class="layui-btn layui-btn-small" href="/mysql/add"><i class="layui-icon iconfont icon-plus"></i>快速创建</a>
+							</div>
+							<div class="layui-input-inline" style="width: 100px;">
+								<select name="dt" class="layui-input-small">
+							        <option value="1">用户名</option>
+							        <option value="2">备注</option>
+							    </select>
+							</div>
+							<div class="layui-input-inline" style="width: 120px;margin-left:-10px;margin-right:0">
+								<input type="text" name="keyword" placeholder="搜索数据库" autocomplete="off" class="layui-input layui-input-small">
+							</div>
+							<div class="layui-input-inline" style="width: 35px;margin-left:-1px;margin-right:0">
+					        	<button type="submit" class="layui-btn layui-btn-primary layui-btn-small"><i class="iconfont icon-search"></i></button>
+					        </div>
+						</div>
+					</form>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">ID</th>
+								<th class="text-center">用户名</th>
+								<th class="text-center">数据库名</th>
+								<th class="text-center">编码</th>
+								<th class="text-center">大小</th>
+								<th class="text-center">访问地址</th>
+								<th class="text-center">站点/备注</th>
+								<th class="text-center">数据管理</th>
+								<th class="text-center">创建时间</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .mys}}
+							<tr class="text-center">
+								<td>{{.Id}}</td>
+							    <td class="text-left">{{.Username}}</td>
+							    <td class="text-left">{{.Dbname}}</td>
+								<td>{{.Dbcharset}}</td>
+							    <td>{{.Dbsize}}</td>
+							    <td>{{.Dbhost}}</td>
+							    <td>{{.Note}}</td>
+							    <td>
+							    	<button class="layui-btn layui-btn-normal layui-btn-mini btnMysqlImport" data-dbname='{{.Dbname}}'>导入</button> 
+							    	<a class="layui-btn layui-btn-primary layui-btn-mini" href="?dbname={{.Dbname}}&act=export" data-target="notab">导出</a>
+							    </td>
+							    <td>{{dateformat .Ctime "2006-01-02 15:04"}}</td>
+							    <td style="min-width: 160px;">
+							    	<button class="layui-btn layui-btn-mini" onclick="act_confirm('确定要备份数据库？','/sys/backup','act=bk&t=mysql&name={{.Dbname}}&p=');">备份</button> 
+							    	<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定删除？','/mysql/del','id={{.Id}}','reload');">删除</button> 
+							    	<button class="layui-btn layui-btn-warm layui-btn-mini btnMysqlChg" data-id="{{.Id}}" data-user="{{.Username}}" data-host="{{.Dbhost}}">改密</a> 
+							    </td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<div class="layui-laypage">
+						{{str2html .pageBar}}
+					</div>
+				</div>
+			</fieldset>
+			<!--上传模板 start-->
+			<script type="text/template" id="importFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="?act=imports" enctype="multipart/form-data" id="uploadForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label">备份文件</label>
+							<div class="layui-input-inline">
+								<input type="file" name="upfile">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">压缩文件</label>
+							<div class="layui-input-inline">
+								<input name="gzip" type="checkbox" id="gzip" value="1" lay-skin="primary"/>
+								<input type="hidden" name="dbname"/> 
+							</div>
+							<div class="layui-form-mid layui-word-aux">只支持使用gzip压缩格式的文件</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formMysqlImport">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</script>
+			<!--修改密码模板 start-->
+			<script type="text/template" id="chgFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post" action="/mysql/chgpw" enctype="multipart/form-data" id="uploadForm">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">用户名</label>
+							<div class="layui-input-inline">
+								<div class="layui-form-mid username"></div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="password" required lay-verify="required" placeholder="6-15个字符，由字母、数字、下划线组成" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 60px">确认密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="cpassword" required lay-verify="required" placeholder="请再输入一次" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-input-inline" style="width: 70px">
+								<button type="button" class="layui-btn layui-btn-small" onclick="randompass()">随机密码</button>
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<input type="hidden" name="id"/>
+								<input type="hidden" name="dbuser"/>
+								<input type="hidden" name="dbhost"/>
+								<button class="layui-btn" lay-submit lay-filter="formMysqlChgpw">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</script>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function randompass(){
+	var text='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-'; 
+	var rand = function(min, max){return Math.floor(Math.max(min, Math.random() * (max+1)));} 
+	var password = ''; 
+	for(i=0; i<8; ++i) 
+	{ 
+		password += text.charAt(rand(0, text.length)); 
+	}
+	$("input[name=password]").attr("type",'input').val(password);
+	$("input[name=cpassword]").attr("type",'input').val(password);
+}
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$('.btnMysqlImport').on('click', function() {
+		if(addBoxIndex !== -1) return;
+		var dbname=$(this).attr("data-dbname");
+		content=$("#importFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '数据库导入',
+			content: content,
+			btn: ['上传', '取消'],
+			shade: false,
+			area: ['600px', '335px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formMysqlImport]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				$('form.layui-form').find('input[name=dbname]').val(dbname);
+				form.on('submit(formMysqlImport)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"?act=imports",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1 , time : 1000});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2 , time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2 , time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2 , time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+	$(".btnMysqlChg").click(function(){
+		if(addBoxIndex !== -1) return;
+		var id=$(this).attr("data-id");
+		var username=$(this).attr("data-user");
+		var host=$(this).attr("data-host");
+		content=$("#chgFormSet").html();
+		addBoxIndex = layer.open({
+			type: 1,
+			title: '修改密码',
+			content: content,
+			btn: ['保存', '取消'],
+			shade: false,
+			area: ['400px', '280px'],
+			zIndex: 200000,
+			yes: function(index) {
+				//触发表单的提交事件
+				$('form.layui-form').find('button[lay-filter=formMysqlChgpw]').click();
+			},
+			success: function(layero, index) {
+				//弹出窗口成功后渲染表单
+				var form = layui.form;
+				form.render();
+				$('form.layui-form').find('input[name=id]').val(id);
+				$('form.layui-form').find('.username').html(username);
+				$('form.layui-form').find('input[name=dbuser]').val(username);
+				$('form.layui-form').find('input[name=dbhost]').val(host);
+				form.on('submit(formMysqlChgpw)', function(data) {
+					var formData=new FormData(data.form);
+					$.ajax({
+						url:"/mysql/chgpw",
+						type: 'POST',  
+				        data: formData,  
+				        async: false,  
+				        cache: false,  
+				        contentType: false,  
+				        processData: false, 
+						success:function(data){
+							if(data.errCode==0){
+								layer.msg(data.msg, {icon: 1, time : 1000},function(){
+									layer.close(addBoxIndex);
+								});
+							}else if(data.errCode==1){
+								layer.msg(data.msg, {icon: 2, time : 1000});
+							}else{
+								layer.msg("数据错误", {icon: 2, time : 1000});
+							}
+						},
+						error:function(data){
+							layer.msg("网络错误", {icon: 2, time : 1000});
+						}
+					});
+					return false; //阻止表单提交								
+				});
+			},
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+</script>

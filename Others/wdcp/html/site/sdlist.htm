@@ -1,0 +1,66 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>二级域名</legend>
+				<div class="tools">
+					{{str2html .add}}
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">ID</th>
+								<th class="text-center">站点域名</th>
+								<th class="text-center">绑定域名</th>
+								<th class="text-center">目录</th>
+								<th class="text-center">开通时间</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .sites}}
+							<tr class="text-center">
+								<td>{{.Id}}</td>
+							    <td><a href="http://{{.Domain}}" target="_blank" data-target="notab">{{.Domain}}</a></td>
+							    <td>{{.Domains}}</td>
+							    <td>{{.Vhostdir}}</td>
+							    <td>{{dateformat .Ctime "2006-01-02"}}</td>
+							    <td>
+							    	<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定要删除？','','act=del&id={{.Id}}&domain={{.Domain}}','reload');">删除</button>
+							    </td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+					要添加二级域名，请在 站点列表 里选择相应的域名进行添加
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script>
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	
+	$("#btnSubdomainAdd").click(function(){
+		if(addBoxIndex !== -1) return;
+		var sid=$(this).attr("data-sid");
+		addBoxIndex = layer.open({
+			type: 2,
+			title: '二级域名绑定',
+			content: '?act=add&sid='+sid,
+			shade: false,
+			area: ['800px', '500px'],
+			zIndex: 200000,
+			end: function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+
+</script>

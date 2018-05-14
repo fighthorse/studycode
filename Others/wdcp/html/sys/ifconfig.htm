@@ -1,0 +1,165 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>IP设置</legend>
+				<div class="tools">
+					网关：{{.gate}}
+					<button class="layui-btn layui-btn-small" id="btnIfconfigAdd"><i class="layui-icon iconfont icon-plus"></i>增加IP</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">网卡</th>
+								<th class="text-center">IP地址</th>
+								<th class="text-center">子网掩码</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						{{range .ips}} 
+							<tr class="text-center">
+								<td>{{.name}}</td>
+							    <td>{{.ip}}</td>
+							    <td>{{.mask}}</td>
+							    <td style="min-width: 160px;">
+							    	<button class="layui-btn layui-btn-warm layui-btn-mini" onclick="act_confirm('确定要停用IP吗','','act=stop&n={{.name}}&ip={{.ip}}','reload')">停用</button> 
+							    	<button class="layui-btn layui-btn-danger layui-btn-mini" onclick="act_confirm('确定要删除IP吗','','act=del&n={{.name}}&ip={{.ip}}','reload')">删除</button>
+							    </td>
+							</tr>
+						{{end}}
+						</tbody>
+					</table>
+					<blockquote class="layui-elem-quote">
+						1:eth(0/1/2)是Linux的网卡名称，为第1，2，3块<br />
+					    2:eth0:0 为绑定在第一块网卡(eth0)上的IP地址，如此类推，eth0:1，eth0:2...<br />
+					    3:停用表示停止使用该IP，重启后恢复<br />
+					    4:删除表示删除该IP的配置，永久删除，重启也不会恢复<br />
+					    5:venet为OpenVZ虚拟机上的网卡名称
+					</blockquote>
+				</div>
+			</fieldset>
+			<!--增加IP模板 start-->
+			<script type="text/template" id="addFormSet">
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">网卡名称</label>
+							<div class="layui-input-inline" style="width:100px;">
+								<select name="eth" id="eth">
+						        	<option value="eth0:0">eth0:0</option>
+						        	<option value="eth0:1">eth0:1</option>
+						        	<option value="eth0:2">eth0:2</option>
+						        	<option value="eth0:3">eth0:3</option>
+									<option value="eth0:4">eth0:4</option>
+									<option value="eth0:5">eth0:5</option>
+						        	<option value="eth1:0">eth1:0</option>
+						        	<option value="eth1:1">eth1:1</option>
+						        	<option value="eth1:2">eth1:2</option>
+						        	<option value="eth1:3">eth1:3</option>
+									<option value="eth1:4">eth1:4</option>
+									<option value="eth1:5">eth1:5</option>
+									<option value="venet0:1">venet0:1</option>
+									<option value="venet0:2">venet0:2</option>
+									<option value="venet0:3">venet0:3</option>
+									<option value="venet0:4">venet0:4</option>
+									<option value="venet0:5">venet0:5</option>
+						    	</select>
+							</div>
+							<div class="layui-form-mid">定义</div>
+							<div class="layui-input-inline" style="width:100px">
+								<input type="text" name="eths" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">IP地址</label>
+							<div class="layui-input-inline" style="width:248px">
+								<input type="text" name="ipaddr" required lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">子网掩码</label>
+							<div class="layui-input-inline" style="width:248px">
+								<input type="text" name="netmask" required lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">重启生效</label>
+							<div class="layui-input-inline" style="width:248px">
+								<input name="save" type="checkbox" title="保存" lay-skin="switch" value="1" lay-text="打开|关闭"/>
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formIfconfigAdd">提交</button>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">
+							1:增加IP地址不用设置网关,选择网卡后，有IP和子网掩码就可以<br />
+					        2:如要重启后生效，请打开&quot;重启生效&quot;开关，否则重启后无效<br>
+						    3:如果网卡名称列表找所用网卡名，可使用自定义设置
+						</blockquote>	
+					</form>
+				</div>
+			</script>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('form', function() {
+		var addBoxIndex = -1;
+		$("#btnIfconfigAdd").click(function(){
+			if(addBoxIndex !== -1) return;
+			content=$("#addFormSet").html();
+			addBoxIndex = layer.open({
+				type: 1,
+				title: '增加IP',
+				content: content,
+				btn: ['保存', '取消'],
+				shade: false,
+				area: ['500px', '400px'],
+				zIndex: 200000,
+				yes: function(index) {
+					//触发表单的提交事件
+					$('form.layui-form').find('button[lay-filter=formIfconfigAdd]').click();
+				},
+				success: function(layero, index) {
+					//弹出窗口成功后渲染表单
+					var form = layui.form;
+					form.render();
+					form.on('submit(formIfconfigAdd)', function(data) {
+						var formData=new FormData(data.form);
+						$.ajax({
+							url:"?act=add",
+							type: 'POST',  
+					        data: formData,  
+					        async: false,  
+					        cache: false,  
+					        contentType: false,  
+					        processData: false, 
+							success:function(data){
+								if(data.errCode==0){
+									layer.msg(data.msg, {icon: 1 , time : 1000},function(){
+										window.location.reload();
+									});
+								}else if(data.errCode==1){
+									layer.msg(data.msg, {icon: 2 , time : 1000});
+								}else{
+									layer.msg("数据错误", {icon: 2 , time : 1000});
+								}
+							},
+							error:function(data){
+								layer.msg("网络错误", {icon: 2 , time : 1000});
+							}
+						});
+						return false; //阻止表单提交								
+					});
+				},
+				end: function() {
+					addBoxIndex = -1;
+				}
+			});
+		});
+	});
+</script>

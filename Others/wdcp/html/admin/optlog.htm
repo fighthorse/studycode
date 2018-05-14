@@ -1,0 +1,40 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>操作日志</legend>
+				<div class="tools">
+					<button class="layui-btn layui-btn-primary layui-btn-small" onclick="act_confirm('确定要清空吗','','act=clean','reload')"><i class="layui-icon iconfont icon-delete"></i>清空操作日志</button>
+				</div>
+				<div class="layui-field-box">
+					<table class="layui-table" lay-size="sm">
+						<thead>
+							<tr>
+								<th class="text-center">序号</th>
+								<th class="text-center">用户</th>
+								<th class="text-center">操作</th>
+								<th class="text-center">IP</th>
+								<th class="text-center">时间</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{range .ologs}}
+							<tr>
+								<td class="text-center">{{.Id}}</td>
+								<td class="text-center">{{.Username}}</td>
+								<td class="text-center">{{.Opt}}</td>
+								<td class="text-center">{{.Ipaddr}}</td>
+								<td class="text-center">{{dateformat .Rtime "2006-01-02 15:04"}}</td>
+							</tr>
+							{{end}}
+						</tbody>
+					</table>
+					
+					<div class="layui-laypage">
+						{{str2html .pageBar}}
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

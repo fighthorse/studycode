@@ -1,0 +1,188 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>PHP设置</legend>
+				<div class="tools">
+					<a class="layui-btn layui-btn-primary layui-btn-small" href="/site/phps"><i class="layui-icon iconfont icon-setting"></i>PHP版本管理</a>
+					<button class="layui-btn layui-btn-normal layui-btn-small" onclick="location.reload()"><i class="layui-icon iconfont icon-refresh"></i>刷新</button>
+					<button class="layui-btn layui-btn-small" id="editPhpIni" data-file="{{.conf}}"><i class="layui-icon iconfont icon-edit"></i>在线编辑</button>
+				</div>
+				<div class="layui-row">
+				<div class="layui-field-box layui-col-md6">
+					<form class="layui-form">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">配置文件</label>
+							<div class="layui-input-inline" >
+								<div class="layui-form-mid">{{.conf}}</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">安全模式</label>
+							<div class="layui-input-inline" >
+								<input type="checkbox" lay-skin='switch' lay-text="开启|关闭" data-act="safe_mode" {{if eq .m.safe_mode "On"}}checked{{end}}>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">URL打开文件 allow_url_fopen</label>
+							<div class="layui-input-inline" >
+								<input type="checkbox" lay-skin='switch' lay-text="开启|关闭" data-act="allow_url_fopen" {{if eq .m.allow_url_fopen "On"}}checked{{end}}>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">错误信息 display_errors</label>
+							<div class="layui-input-inline" >
+								<input type="checkbox" lay-skin='switch' lay-text="开启|关闭" data-act="display_errors" {{if eq .m.display_errors "On"}}checked{{end}}>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">全局变量 register_globals</label>
+							<div class="layui-input-inline" >
+								<input type="checkbox" lay-skin='switch' lay-text="开启|关闭" data-act="register_globals" {{if eq .m.register_globals "On"}}checked{{end}}>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="layui-field-box layui-col-md6">
+						<form class="layui-form" method="post" action="?p={{.conf}}">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">使用内存量 memory_limit</label>
+							<div class="layui-input-inline" >
+								<input type="text" name="memory_limit" value="{{.m.memory_limit}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">POST最大字节数 post_max_size</label>
+							<div class="layui-input-inline" >
+								<input type="text" name="post_max_size" value="{{.m.post_max_size}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">允许最大上传文件 upload_max_filesize</label>
+							<div class="layui-input-inline" >
+								<input type="text" name="upload_max_filesize" value="{{.m.upload_max_filesize}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">程序最长运行时间 max_execution_time</label>
+							<div class="layui-input-inline" >
+								<input type="text" name="max_execution_time" value="{{.m.max_execution_time}}" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width:250px;">禁用函数disable_functions</label>
+							<div class="layui-input-inline" >
+								<textarea name="disable_functions" autocomplete="off" class="layui-textarea">{{.m.disable_functions}}</textarea>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-small" lay-submit lay-filter="formPhpEdit">提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary layui-btn-small">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<blockquote class="layui-elem-quote">
+				1:修改后，默认PHP需重启web服务，多版本PHP需要重启相应的PHP，才会生效可用。<br />
+				2:禁用函数，留空则不设定，多个时用“,”分隔，结尾不要逗号。<br>
+				3:新版本的PHP对“safe_mode”，“register_globals”变量的取消，所以会设置无效，可不必理会。
+			</blockquote>
+			</fieldset>
+			
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var form=layui.form;
+	var addBoxIndex = -1;
+	form.on('switch',function(check){
+		var msg = check.elem.checked ? "确定要开启吗" : "确定要关闭吗";
+		var act = check.elem.checked ? "On" : "Off";
+		var v = $(check.elem).attr('data-act');
+		var para = "act="+act+"&v="+v+"&p={{.conf}}";
+		var url = window.location.href;
+		layer.open({
+			content : msg,
+			icon : 3,
+			title : '系统提示',
+			btn:['确定','取消'],
+			yes : function () {
+				$.ajax({
+					url : url,
+					data : para,
+					type : 'get',  
+					success : function(data){
+						if(data.errCode == 0){
+							layer.msg(data.msg , {icon: 1, time : 1000});
+						}else if(data.errCode == 1){
+							layer.msg(data.msg , {icon: 2, time : 1000});
+						}else{
+							layer.msg("数据错误" , {icon: 2, time : 1000});
+						}
+					},
+					error : function(data){
+						layer.alert("网络错误",{icon : 2 , title : "系统提示"});
+						$(check.elem).prop("checked" , !check.elem.checked);
+						form.render("checkbox");
+					}
+				});
+
+		    }, btn2 : function(){
+		    	$(check.elem).prop("checked" , !check.elem.checked);
+				form.render("checkbox");
+		    }, cancel : function(){
+		    	$(check.elem).prop("checked" , !check.elem.checked);
+				form.render("checkbox");
+			}
+		});
+	});
+	$("form").submit(function(){
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:location.href,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1, time : 1000});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2, time : 1000});
+				}else{
+					layer.msg("数据错误", {icon: 2, time : 1000});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2, time : 1000});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+	$("#editPhpIni").click(function(){
+		if(addBoxIndex !== -1) return;
+		var file = $(this).attr("data-file");
+		var url="/sys/filee?act=edit&t=f&p="+file;
+		addBoxIndex = layer.open({
+			type : 2,
+			title : "编辑配置文件",
+			content : url,
+			shade : false,
+			area : ['800px', '500px'],
+			zIndex : 200000,
+			end : function() {
+				addBoxIndex = -1;
+			}
+		});
+	});
+});
+</script>

@@ -1,0 +1,50 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>修改密码</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">原密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="opasswd" required lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">请输入原密码</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">新密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="npasswd" required lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">6-15个字符，由字母、数字、下划线组成</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">确认密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="cnpasswd" required lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">请确认新密码</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formSshChgpw">提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+					<blockquote class="layui-elem-quote">
+						1:修改SSH公钥登录的私钥密码,默认私钥密码为空<br>
+      					2:务必保存好新密码 
+					</blockquote>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('form', function() {
+		var form = layui.form;
+		//监听提交
+	});
+</script>

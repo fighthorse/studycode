@@ -1,0 +1,68 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>PING设置</legend>
+				<div class="layui-field-box">
+					<form class="layui-form">
+						<div class="layui-form-item">
+							<label class="layui-form-label">设置</label>
+							<div class="layui-input-block">
+								<input type="checkbox" lay-skin='switch' lay-text="开启|关闭" {{if eq .status "开"}}checked{{end}}>
+							</div>
+						</div>
+						<blockquote class="layui-elem-quote">						
+							1 ping是一个可以检测网络连通性及机器存活状态的一个程序。但同时也是一个很多入侵和攻击的开始。所以，禁止ping在一定程序上，可以增加安全性。<br/>
+							2 由于OepnVZ虚拟化限制，此功能在OpenVZ的VPS上无效。
+						</blockquote>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var form = layui.form;
+	form.on('switch',function(check){
+		var msg = check.elem.checked ? "确定要开启吗" : "确定要关闭吗";
+		var act = check.elem.checked ? "act=on" : "act=off";
+		var url = window.location.href;
+		layer.open({
+			content : msg,
+			icon : 3,
+			title : '系统提示',
+			btn:['确定','取消'],
+			yes : function () {
+				$.ajax({
+					url : url,
+					data : act,
+					type : 'get',  
+					success : function(data){
+						if(data.errCode == 0){
+							layer.msg(data.msg, {icon: 1 , time : 1000});
+						}else if(data.errCode == 1){
+							layer.msg(data.msg, {icon: 2 , time : 1000});
+						}else{
+							layer.msg("数据错误", {icon: 2 , time : 1000});
+						}
+					},
+					error : function(data){
+						layer.alert("网络错误" , {icon : 2 , title : "系统提示" , time : 1000});
+						$(check.elem).prop("checked" , !check.elem.checked);
+						form.render("checkbox");
+					}
+				});
+
+		    }, btn2 : function(){
+		    	$(check.elem).prop("checked" , !check.elem.checked);
+				form.render("checkbox");
+		    }, cancel : function(){
+		    	$(check.elem).prop("checked" , !check.elem.checked);
+				form.render("checkbox");
+			}
+		});
+	});
+});
+</script>

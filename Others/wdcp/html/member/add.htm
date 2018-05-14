@@ -1,0 +1,90 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+			<fieldset class="layui-elem-field">
+				<legend>增加账号</legend>
+				<div class="layui-field-box">
+					<form class="layui-form" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">用户名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="username" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">3-12个字符，由字母、数字、下划线组成</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="password" required lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">6-15个字符，由字母、数字、下划线组成</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">确认密码</label>
+							<div class="layui-input-inline">
+								<input type="password" name="password2" required lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">请再输入一次</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">电话</label>
+							<div class="layui-input-inline">
+								<input type="text" name="phone" placeholder="可选" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">QQ</label>
+							<div class="layui-input-inline">
+								<input type="text" name="qq" placeholder="可选" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">邮箱</label>
+							<div class="layui-input-inline">
+								<input type="text" name="email" placeholder="可选" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formMemberadd">提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use('form', function() {
+	var $ = layui.jquery;
+	var addBoxIndex = -1;
+	$("form").submit(function(){
+		var url=location.href;
+		var formData=new FormData($(this)[0]);
+		$.ajax({
+			url:url,
+			type: 'POST',  
+	        data: formData,  
+	        async: false,  
+	        cache: false,  
+	        contentType: false,  
+	        processData: false, 
+			success:function(data){
+				if(data.errCode==0){
+					layer.msg(data.msg, {icon: 1});
+				}else if(data.errCode==1){
+					layer.msg(data.msg, {icon: 2});
+				}else{
+					layer.msg("数据错误", {icon: 2});
+				}
+			},
+			error:function(data){
+				layer.msg("网络错误", {icon: 2});
+			}
+		});
+		return false; //阻止表单提交	
+	});
+});
+</script>

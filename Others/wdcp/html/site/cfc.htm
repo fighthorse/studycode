@@ -1,0 +1,22 @@
+<div class="layui-main">
+	<div class="layui-row">
+		<div class="layui-col-md12">
+				<div class="layui-field-box">
+						<div class="layui-form-item">
+							<label class="layui-form-label">当前环境</label>
+							<div class="layui-input-block">
+								<div class="layui-form-mid">{{.engs}} <button class="layui-btn layui-btn-normal layui-btn-mini" onclick="location.reload()"> 再次检查</button></div>
+							</div>
+							
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">检查结果</label>
+							<div class="layui-input-block">
+								<textarea class="layui-textarea" style="width:530px;height:300px">{{str2html .contents}}</textarea>
+							</div>
+							
+						</div>
+				</div>
+		</div>
+	</div>
+</div>
